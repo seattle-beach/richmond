@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Xunit;
 
 namespace Tests
@@ -9,11 +8,15 @@ namespace Tests
         [Fact]
         public void ReturnsResponse() 
         {
-        	var richmond = new Richmond();
-        	var response = richmond.HelloWorld();
+            var richmond = new Richmond();
+            IActionResult response = richmond.HelloWorld();
 
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-            // body is like JSON: {"response":"hello, world!"}
+            var result = response as OkObjectResult;
+
+            Assert.NotNull(result);
+
+            var payload = result.Value as HelloResponse;
+            Assert.Equal("hello, world!", payload.Response);
         }
     }
 }
