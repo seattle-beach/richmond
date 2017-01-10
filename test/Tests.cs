@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Xunit;
 
-namespace Tests
+namespace Richmond.Tests
 {
-    public class Tests
+    public class HelloControllerTests
     {
         [Fact]
         public void ReturnsResponse() 
         {
-            var richmond = new Richmond();
-            IActionResult response = richmond.HelloWorld();
+            var subject = new HelloController();
+            IActionResult response = subject.HelloWorld();
 
             var result = response as OkObjectResult;
 

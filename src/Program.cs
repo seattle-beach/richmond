@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace ConsoleApplication
+namespace Richmond
 {
-    public class Program
+    public class HelloController
     {
-        public static void Main(string[] args)
+        [HttpGet]
+        public IActionResult HelloWorld()
         {
-            Console.WriteLine("Hello World!");
+            System.Console.WriteLine("Hello World!");
+            return new OkResult();
         }
     }
 }
