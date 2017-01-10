@@ -1,12 +1,17 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft​.Extensions​.DependencyInjection;
 using System.IO;
 
 namespace Richmond
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvc();
+        }
+
         public void Configure(IApplicationBuilder app)
         {
             app.UseMvc();

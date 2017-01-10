@@ -4,9 +4,6 @@
     "debugType": "portable",
     "emitEntryPoint": true
   },
-  "runtimes": {
-    "osx.10.12-x64": {}
-  },
   "commands": {
     "web": "Web"
   },
@@ -16,6 +13,13 @@
     "Microsoft.AspNetCore.Mvc": "1.*"
   },
   "frameworks": {
-    "netstandard1.6": {}
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.1.0"
+        }
+      }
+    }
   }
 }

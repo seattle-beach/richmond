@@ -3,9 +3,6 @@
   "buildOptions": {
     "debugType": "portable"
   },
-  "runtimes": {
-    "osx.10.12-x64": {}
-  },
   "dependencies": {
     "System.Runtime.Serialization.Primitives": "4.3.0",
     "xunit": "2.2.0-*",

@@ -4,7 +4,7 @@ namespace Richmond
 {
     public class HelloController
     {
-        [HttpGet]
+        [HttpGet("world")]
         public IActionResult HelloWorld()
         {
             System.Console.WriteLine("Hello World!");
