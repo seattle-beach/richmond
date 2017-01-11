@@ -1,5 +1,5 @@
 describe("Index", function() {
-  var clock;
+  var clock, time;
 
   beforeEach(function() {
     this.root = document.createElement("div");
@@ -7,16 +7,15 @@ describe("Index", function() {
   });
   
   describe("startTime", function() {
-    it("populates clock div periodically", function() {
+    it("populates clock div periodically", function(done) {
       this.subject.setTime();
-      var time = this.root.innerHTML;
+      time = "" + this.root.innerHTML;
       expect(time).toEqual(jasmine.stringMatching(/^[0-9][0-9]:[0-9][0-9]:[0-9][0-9]$/));
 
       setTimeout(function(){
-        expect(time).not.toEqual(this.root.innerHTML);
-      }, 1000);
-      
-
+        expect(time).not.toEqual("" + this.root.innerHTML);
+        done();
+      }.bind(this), 1500);
     });
   });
 });
