@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft​.Extensions​.DependencyInjection;
 using System.IO;
 
@@ -19,9 +20,13 @@ namespace Richmond
 
         public static void Main(string[] args)
         {
+            var config = new ConfigurationBuilder()
+                .AddCommandLine(args)
+                .Build();
+
             var host = new WebHostBuilder()
-                .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseKestrel()
+                .UseConfiguration(config)
                 .UseStartup<Startup>()
                 .Build();
 
