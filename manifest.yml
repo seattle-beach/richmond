@@ -1,0 +1,6 @@
+---
+applications:
+- name: api
+  memory: 1GB
+  disk_quota: 2GB
+  path: backend/src/bin/Debug/netcoreapp1.0/publish
