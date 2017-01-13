@@ -3,6 +3,7 @@ using AngleSharp.Dom;
 using AngleSharp.Parser.Html;
 using System.Linq;
 using System.Net.Http;
+using System;
 
 namespace Richmond
 {
@@ -11,7 +12,7 @@ namespace Richmond
     {
 
         string RequestFoodTruckWebsite();
-        IList<FoodTruckResponse.FoodTruck> ParseFoodTruckSite(string html);
+        FoodTruckResponse ParseFoodTruckSite(string html);
     }
 
     public class FoodTruckRepository : IFoodTruckRepository
@@ -30,15 +31,26 @@ namespace Richmond
             _httpMessageHandler = httpMessageHandler;
         }
 
-        public IList<FoodTruckResponse.FoodTruck> ParseFoodTruckSite(string html)
+        public FoodTruckResponse ParseFoodTruckSite(string html)
         {
+
             var parser = new HtmlParser();
             var document = parser.Parse(html);
-            var schedule = document.QuerySelector("body > div.l-canvas.sidebar_right.type_wide.titlebar_default > div.l-main > div > div > section.l-section.wpb_row.height_small > div > div > div > div.wpb_text_column > div > div > div > dl > dd.simcal-weekday-3.simcal-past.simcal-day.simcal-day-has-events.simcal-day-has-1-events.simcal-events-calendar-5736.simcal-day-has-events.simcal-day-has-2-events.simcal-events-calendar-5736.simcal-day-has-events.simcal-day-has-3-events.simcal-events-calendar-5736.simcal-day-has-events.simcal-day-has-4-events.simcal-events-calendar-5736 > ul");
 
-            return schedule.Children
-                .Select(ToFoodTruck)
-                .ToList();
+            var schedule = document.QuerySelector("body > div.l-canvas.sidebar_right.type_wide.titlebar_default > div.l-main > div > div > section.l-section.wpb_row.height_small > div > div > div > div.wpb_text_column > div > div > div > dl");
+
+            var date = schedule.Children[2].Children[0];
+            var dayOfWeek = date.Children[0].InnerHtml;
+            var dayOfMonth = date.Children[1].InnerHtml;
+            var month = date.Children[2].InnerHtml;
+            var year = date.Children[3].InnerHtml;
+
+            var foodTruckList = schedule.Children[3].Children[0];
+
+            IList<FoodTruckResponse.FoodTruck> foodTrucks = foodTruckList.Children.Select(ToFoodTruck).ToList();
+            var dateString = String.Join(" ", new string[] { dayOfWeek, dayOfMonth, month, year });
+
+            return new FoodTruckResponse { FoodTrucks = foodTrucks, Date = dateString };
         }
 
         private FoodTruckResponse.FoodTruck ToFoodTruck(IElement element)

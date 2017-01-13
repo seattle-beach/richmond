@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Xunit;
 using System;
 using System.IO;
-using LightMock;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,15 +23,15 @@ namespace Richmond.Tests
 
             IList<FoodTruckResponse.FoodTruck> expectedResponse = new FoodTruckResponse.FoodTruck[4];
 
-            expectedResponse[0] = new FoodTruckResponse.FoodTruck { Name = "Delfino's Chicago Pizza", Type = "Pizza" };
-            expectedResponse[1] = new FoodTruckResponse.FoodTruck { Name = "El Cabrito Oaxaca", Type = "Mexican" };
-            expectedResponse[2] = new FoodTruckResponse.FoodTruck { Name = "NOSH", Type = "English" };
-            expectedResponse[3] = new FoodTruckResponse.FoodTruck { Name = "Seattle Chicken Over Rice", Type = "Mediterranean" };
+            expectedResponse[0] = new FoodTruckResponse.FoodTruck { Name = "Beez Kneez Gourmet Sausages", Type = "Hot Dogs" };
+            expectedResponse[1] = new FoodTruckResponse.FoodTruck { Name = "Seattle Chicken Over Rice", Type = "Mediterranean" };
+            expectedResponse[2] = new FoodTruckResponse.FoodTruck { Name = "Bomba Fusion", Type = "Asian" };
+            expectedResponse[3] = new FoodTruckResponse.FoodTruck { Name = "Neema's Comfort Food", Type = "Southern" };
 
 
             for (var i = 0; i < 4; i++)
             {
-                Assert.Equal(expectedResponse[i], result[i]);
+                Assert.Equal(expectedResponse[i], result.FoodTrucks[i]);
             }
         }
 
@@ -75,7 +74,6 @@ namespace Richmond.Tests
                 };
 
                 return await Task.FromResult(responseMessage);
-
             }
         }
     }

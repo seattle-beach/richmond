@@ -16,16 +16,9 @@ namespace Richmond
         [HttpGet("foodtrucks")]
         public IActionResult FoodTrucks()
         {
-
-            var response = new FoodTruckResponse
-            {
-                FoodTrucks = _sessionRepository.ParseFoodTruckSite(
-                _sessionRepository.RequestFoodTruckWebsite())
-            };
+            var response = _sessionRepository.ParseFoodTruckSite(_sessionRepository.RequestFoodTruckWebsite());
             return new OkObjectResult(response);
-
         }
-
 
     }
 }

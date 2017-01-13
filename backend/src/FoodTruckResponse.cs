@@ -17,5 +17,6 @@ namespace Richmond
         }
 
         public IList<FoodTruck> FoodTrucks { get; set; }
+        public string Date { get; set; }
     }
 }
