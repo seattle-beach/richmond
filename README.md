@@ -34,3 +34,7 @@ richmond> cf push
 # dotnet core resources
 - [project.json](https://docs.microsoft.com/en-us/dotnet/articles/core/tools/project-json) (similar to package.json, Gemfile, Cargo.toml, build.gradle, *.csproj, ...)
 - [.NET Core](https://docs.microsoft.com/en-us/dotnet/)
+
+# Monitor between Lovelace and Hopper
+vnc://10.37.2.27
+https://concourse.ci/vagrant.html
