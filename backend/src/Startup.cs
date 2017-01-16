@@ -11,10 +11,14 @@ namespace Richmond
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddSingleton<IFoodTruckRepository, FoodTruckRepository>();
         }
 
         public void Configure(IApplicationBuilder app)
         {
+
+            app.UseDeveloperExceptionPage();
+
             app.UseMvc();
         }
 

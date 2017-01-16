@@ -4,11 +4,11 @@ namespace Richmond
 {
     public class HelloController
     {
-        [HttpGet("world")]
+        [HttpGet("/")]
         public IActionResult HelloWorld()
         {
-            System.Console.WriteLine("Hello World!");
-            return new OkResult();
+            var response = new HelloResponse { Response = "hello, world!" };
+            return new OkObjectResult(response);
         }
     }
 }
