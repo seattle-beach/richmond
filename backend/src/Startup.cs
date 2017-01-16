@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft​.Extensions​.DependencyInjection;
-using System.IO;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 namespace Richmond
 {
@@ -12,13 +12,22 @@ namespace Richmond
         {
             services.AddMvc();
             services.AddSingleton<IFoodTruckRepository, FoodTruckRepository>();
+
+            var corsBuilder = new CorsPolicyBuilder();
+            corsBuilder.AllowAnyHeader();
+            corsBuilder.AllowAnyMethod();
+            corsBuilder.WithOrigins("http://richmond.local"); // for a specific url. Don't add a forward slash on the end!
+            corsBuilder.AllowCredentials();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("SiteCorsPolicy", corsBuilder.Build());
+            });
         }
 
         public void Configure(IApplicationBuilder app)
         {
-
             app.UseDeveloperExceptionPage();
-
             app.UseMvc();
         }
 

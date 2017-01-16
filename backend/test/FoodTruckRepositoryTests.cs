@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Xunit;
-using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
@@ -41,8 +40,8 @@ namespace Richmond.Tests
             private static readonly List<object[]> _data
                 = new List<object[]>
                 {
-                    new object[] {File.ReadAllText(Path.Combine(Environment.GetEnvironmentVariable("RICHMOND_BASE_DIRECTORY"),
-                "backend/test/food_truck_fixture.html"))}
+                    new object[] {File.ReadAllText(Path.Combine(System.IO.Directory.GetCurrentDirectory(),
+                    "food_truck_fixture.html"))}
                 };
 
             public static IEnumerable<object[]> HtmlData
