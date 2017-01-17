@@ -1,7 +1,8 @@
 #!/bin/bash -e
 
-test_directory=$1
+project_root=$1
 
-cd $test_directory
+cd $project_root
 dotnet restore
+cd test
 dotnet test
