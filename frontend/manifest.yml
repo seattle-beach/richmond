@@ -1,4 +1,4 @@
 applications:
 - name: richmond
   memory: 256MB
-  path: frontend
+  path: .
