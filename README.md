@@ -26,7 +26,7 @@ richmond/backend/src> dotnet run
 # Deployment
 Environment variables `CF_PASSWORD` and `CF_USERNAME` must be set. We're using `direnv` to manage these, but anything is fine.
 
-The app is deployed in the "seattle-beach" PWS org, space name "richmond". We have a deployment service account "alidaka+richmond+cf@pivotal.io"; ask another beach person for the password.
+The app is deployed in the `seattle-beach` PWS org, space name `richmond`. We have a deployment service account `alidaka+richmond+cf@pivotal.io`; ask another beach person for the password.
 
 # Concourse CI
 We're currently using the monitor between Lovelace and Hopper as our Concourse CI server.
@@ -37,7 +37,7 @@ We're currently using the monitor between Lovelace and Hopper as our Concourse C
 ```
 config.vm.network "forwarded_port", guest: 8080, host: 8080
 ```
-4. Visit [http://10.37.2.27:8080], download `fly`
+4. Visit http://10.37.2.27:8080, download `fly`
 5. `richmond/concourse> ./update-concourse.sh`
 
 # dotnet core resources
