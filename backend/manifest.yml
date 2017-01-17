@@ -1,0 +1,4 @@
+applications:
+- name: api
+  memory: 1GB
+  disk_quota: 2GB

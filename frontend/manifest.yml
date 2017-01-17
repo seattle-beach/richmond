@@ -1,8 +1,4 @@
 applications:
-- name: api
-  memory: 1GB
-  disk_quota: 2GB
-applications:
 - name: richmond
   memory: 256MB
   path: frontend
