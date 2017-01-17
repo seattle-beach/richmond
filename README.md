@@ -1,9 +1,12 @@
+# Richmond
+https://richmond.cfapps.io/
+
 # Installation
 [Install](https://www.microsoft.com/net/core) .NET Core.
 
 For development, I would recommend [Visual Studio Code](https://code.visualstudio.com/) with the [C# plugin](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp).
 
-# Build and run
+# Build and run locally
 ### Populate local dependency cache
 `richmond/backend> dotnet restore`
 
@@ -21,26 +24,22 @@ richmond/backend/src> dotnet run
 ```
 
 # Deployment
-CI is a work-in-progress...deploy directly to PWS:
+Environment variables `CF_PASSWORD` and `CF_USERNAME` must be set. We're using `direnv` to manage these, but anything is fine.
+
+The app is deployed in the "seattle-beach" PWS org, space name "richmond". We have a deployment service account "alidaka+richmond+cf@pivotal.io"; ask another beach person for the password.
+
+# Concourse CI
+We're currently using the monitor between Lovelace and Hopper as our Concourse CI server.
+
+1. Connect to the machine: `vnc://10.37.2.27` or `ci1.local`
+2. See the vagrant installation instructions [here](https://concourse.ci/vagrant.html)
+3. On the Concourse host, uncomment (or add a line to) the Vagrantfile like:
 ```
-richmond> cd backend/src
-richmond/backend/src> dotnet restore
-richmond/backend/src> dotnet publish
-richmond/backend/src> cd ../..
-richmond> cf login # target the 'richmond' space
-richmond> cf push
+config.vm.network "forwarded_port", guest: 8080, host: 8080
 ```
+4. Visit [http://10.37.2.27:8080], download `fly`
+5. `richmond/concourse> ./update-concourse.sh`
 
 # dotnet core resources
 - [project.json](https://docs.microsoft.com/en-us/dotnet/articles/core/tools/project-json) (similar to package.json, Gemfile, Cargo.toml, build.gradle, *.csproj, ...)
-- [.NET Core](https://docs.microsoft.com/en-us/dotnet/)
-
-# Monitor between Lovelace and Hopper
-vnc://10.37.2.27
-https://concourse.ci/vagrant.html
-
-!!! insert instrucdtions for exposing vagrant externally here
-
-`vagrant up` on startup
-
-direnv for environment variables CF_PASSWORD and CF_USERNAME
+- [.NET Core](https://docs.microsoft.com/en-us/dotnet)
