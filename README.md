@@ -38,3 +38,9 @@ richmond> cf push
 # Monitor between Lovelace and Hopper
 vnc://10.37.2.27
 https://concourse.ci/vagrant.html
+
+!!! insert instrucdtions for exposing vagrant externally here
+
+`vagrant up` on startup
+
+direnv for environment variables CF_PASSWORD and CF_USERNAME
