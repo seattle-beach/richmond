@@ -12,6 +12,7 @@ namespace Richmond
         {
             services.AddMvc();
             services.AddSingleton<IFoodTruckRepository, FoodTruckRepository>();
+            services.AddSingleton<IDateProvider, DateProvider>();
 
             var corsBuilder = new CorsPolicyBuilder();
             corsBuilder.AllowAnyHeader();
