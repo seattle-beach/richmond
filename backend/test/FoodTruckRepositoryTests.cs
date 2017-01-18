@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
+using System.Reflection;
 
 namespace Richmond.Tests
 {
@@ -15,7 +16,6 @@ namespace Richmond.Tests
         [MemberData("HtmlData", MemberType = typeof(FoodTruckWebsiteFixture))]
         public void ParsesFoodTruckSite(string html)
         {
-
             var subject = new FoodTruckRepository();
 
             var result = subject.ParseFoodTruckSite(html);
@@ -37,16 +37,19 @@ namespace Richmond.Tests
 
         public static class FoodTruckWebsiteFixture
         {
-            private static readonly List<object[]> _data
-                = new List<object[]>
-                {
-                    new object[] {File.ReadAllText(Path.Combine(System.IO.Directory.GetCurrentDirectory(),
-                    "food_truck_fixture.html"))}
-                };
-
             public static IEnumerable<object[]> HtmlData
             {
-                get { return _data; }
+                get
+                {
+                    var module = typeof(FoodTruckWebsiteFixture).GetTypeInfo().Module;
+                    var fullPath = module.FullyQualifiedName;
+                    var assemblyDir = fullPath.Substring(0, fullPath.Length - module.Name.Length);
+                    return new List<object[]>
+                    {
+                        new object[] {File.ReadAllText(
+                            Path.Combine(assemblyDir, "food_truck_fixture.html"))}
+                    };
+                }
             }
         }
 
