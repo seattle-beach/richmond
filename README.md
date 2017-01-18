@@ -1,6 +1,10 @@
 # Richmond
 https://richmond.cfapps.io/
 
+[Pivotal Tracker](https://www.pivotaltracker.com/n/projects/1948575)
+
+[Google Drive](https://drive.google.com/drive/folders/0Bz7GxM1Uu1OyLTNYT19IRWU5VGM)
+
 # Installation
 [Install](https://www.microsoft.com/net/core) .NET Core.
 
@@ -24,11 +28,11 @@ richmond/backend/src> dotnet run
 ```
 
 # Deployment
-Environment variables `CF_PASSWORD` and `CF_USERNAME` must be set. We're using `direnv` to manage these, but anything is fine.
-
 The app is deployed in the `seattle-beach` PWS org, space name `richmond`. We have a deployment service account `alidaka+richmond+cf@pivotal.io`; ask another beach person for the password.
 
-# Concourse CI
+To `cf push` or update the CI pipeline, environment variables `CF_PASSWORD` and `CF_USERNAME` must be set. We're using `direnv` to manage these, but anything is fine.
+
+### CI
 We're currently using the monitor between Lovelace and Hopper as our Concourse CI server.
 
 1. Connect to the machine: `vnc://10.37.2.27` or `ci1.local`
