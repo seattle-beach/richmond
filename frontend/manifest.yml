@@ -1,4 +1,0 @@
-applications:
-- name: richmond
-  memory: 256MB
-  path: .
