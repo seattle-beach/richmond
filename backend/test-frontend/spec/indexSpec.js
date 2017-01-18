@@ -40,7 +40,7 @@ describe("Index", function() {
 
     it("populate the food trucks widget every five minutes", function() {
 
-      jasmine.Ajax.stubRequest('http://richmond.local:5000/foodtrucks').andReturn({
+      jasmine.Ajax.stubRequest('/foodtrucks').andReturn({
         "responseText": "{\"foodTrucks\":[{\"name\":\"Bread Circuses\",\"type\":\"Burgers / Gastropub\"}], \"date\":\"Monday, 16 January 2017\"}"
       });
 
@@ -49,13 +49,13 @@ describe("Index", function() {
       expect(this.root.innerHTML).toContain('Bread Circuses');
       expect(this.root.innerHTML).toContain('Burgers / Gastropub');
       expect(this.root.innerHTML).toContain('Monday, 16 January 2017');
-      expect(jasmine.Ajax.requests.mostRecent().url).toBe('http://richmond.local:5000/foodtrucks');
+      expect(jasmine.Ajax.requests.mostRecent().url).toBe('/foodtrucks');
 
       jasmine.Ajax.requests.reset();
       expect(jasmine.Ajax.requests.count()).toEqual(0);
       jasmine.clock().tick(5* 60 * 1000 + 1);
       expect(jasmine.Ajax.requests.count()).toEqual(1);
-      expect(jasmine.Ajax.requests.mostRecent().url).toBe('http://richmond.local:5000/foodtrucks');
+      expect(jasmine.Ajax.requests.mostRecent().url).toBe('/foodtrucks');
     });
   });
 });

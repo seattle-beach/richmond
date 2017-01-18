@@ -1,11 +1,7 @@
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace Richmond
 {
-
-    [EnableCors("SiteCorsPolicy")]
     public class FoodTruckController
     {
         private readonly IFoodTruckRepository _sessionRepository;

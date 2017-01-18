@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft​.Extensions​.DependencyInjection;
-using Microsoft.AspNetCore.Cors.Infrastructure;
+using System.IO;
 
 namespace Richmond
 {
@@ -13,22 +13,13 @@ namespace Richmond
             services.AddMvc();
             services.AddSingleton<IFoodTruckRepository, FoodTruckRepository>();
             services.AddSingleton<IDateProvider, DateProvider>();
-
-            var corsBuilder = new CorsPolicyBuilder();
-            corsBuilder.AllowAnyHeader();
-            corsBuilder.AllowAnyMethod();
-            corsBuilder.AllowAnyOrigin();
-            corsBuilder.AllowCredentials();
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy("SiteCorsPolicy", corsBuilder.Build());
-            });
         }
 
         public void Configure(IApplicationBuilder app)
         {
             app.UseDeveloperExceptionPage();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseMvc();
         }
 
@@ -40,6 +31,7 @@ namespace Richmond
 
             var host = new WebHostBuilder()
                 .UseKestrel()
+                .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseConfiguration(config)
                 .UseStartup<Startup>()
                 .Build();

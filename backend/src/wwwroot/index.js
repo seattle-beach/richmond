@@ -18,7 +18,7 @@ DB.foodTruckWidget = function(root) {
 DB.foodTruckWidget.prototype.updateSchedule = function()
 {
     $.ajax({type: "GET",
-        url: "http://richmond.local:5000/foodtrucks", 
+        url: "/foodtrucks", 
         async: true,
         crossDomain: true,
 
