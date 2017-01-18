@@ -1,5 +1,5 @@
-
-<script type="text/javascript" src="index.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="index.js"></script>	
 
 <style>
 
@@ -8,21 +8,79 @@ font-family: ProximaNova;
 src: url("fonts/ProximaNova-Reg.otf") format("opentype");
 }
 
+@font-face {
+    font-family: ProximaNova;
+    src: url("fonts/ProximaNova-Bold.otf") format("opentype");
+    font-weight: bold;
+}
+
 body {
 	font-family: ProximaNova, Helvetica, Verdana, Sans-Serif;
-	background-color: #002e3a;
+	background-color: #008774;
+	margin-top: 120px;
+	color: #ffffff;
 }
 
 div#clock {
-	color: #ffffff;
 	font-size: 160px;
-	margin-top: 120px;
-	text-align: center;
+	text-align: left;
+	width: 700px;
 }
+
+div#foodTrucks {
+	text-align: left;
+	margin-left: 80px;
+	background-color: #ffffff;
+	color: #666666;
+	padding: 50;
+}
+
+.flex-container {
+	display: flex;
+	justify-content: space-between;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+h3 {
+	font: 36px/1.5 ProximaNova, Helvetica, Verdana, sans-serif;
+	margin: 0;
+	padding: 0;
+	color: #008774;
+}
+
+p.foodtrucks
+{
+	margin: 0;
+	padding: 0;
+	margin-bottom: 30;
+	color: #666666
+}
+
+li p {
+  font: 200 18px/1.5 Helvetica, Verdana, sans-serif;
+  margin: 10;
+  padding: 0;
+  margin-left: 25;
+  font-style: italic;
+}
+
+li {
+  overflow: auto;
+  margin-bottom: 36;
+}
+	
 </style>
 
 <body>
-	<div id='clock'>
+
+	<div class="flex-container">
+		<div id='foodTrucks'></div>
+		<div id='clock'></div>
 	</div>
 
 	<script>

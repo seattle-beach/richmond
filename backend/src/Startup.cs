@@ -17,7 +17,7 @@ namespace Richmond
             var corsBuilder = new CorsPolicyBuilder();
             corsBuilder.AllowAnyHeader();
             corsBuilder.AllowAnyMethod();
-            corsBuilder.WithOrigins("http://richmond.local"); // for a specific url. Don't add a forward slash on the end!
+            corsBuilder.AllowAnyOrigin();
             corsBuilder.AllowCredentials();
 
             services.AddCors(options =>
