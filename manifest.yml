@@ -1,4 +1,4 @@
 applications:
-- name: api
+- name: richmond
   memory: 1GB
   disk_quota: 2GB
