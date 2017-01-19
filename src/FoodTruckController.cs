@@ -4,17 +4,17 @@ namespace Richmond
 {
     public class FoodTruckController
     {
-        private readonly IFoodTruckRepository _sessionRepository;
+        private readonly IFoodTruckRepository _foodTruckRepository;
 
-        public FoodTruckController(IFoodTruckRepository sessionRepository)
+        public FoodTruckController(IFoodTruckRepository foodTruckRepository)
         {
-            _sessionRepository = sessionRepository;
+            _foodTruckRepository = foodTruckRepository;
         }
 
         [HttpGet("foodtrucks")]
         public IActionResult FoodTrucks()
         {
-            var response = _sessionRepository.ParseFoodTruckSite(_sessionRepository.RequestFoodTruckWebsite());
+            var response = _foodTruckRepository.ParseFoodTruckSite(_foodTruckRepository.RequestFoodTruckWebsite());
             return new OkObjectResult(response);
         }
 
