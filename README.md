@@ -12,19 +12,19 @@ For development, I would recommend [Visual Studio Code](https://code.visualstudi
 
 # Build and run locally
 ### Populate local dependency cache
-`richmond/backend> dotnet restore`
+`richmond> dotnet restore`
 
 ### Run tests:
 ```
-richmond/backend> cd test
-richmond/backend/test> dotnet test
+richmond> cd backend-test
+richmond/backend-test> dotnet test
 ```
 
 ### Run server:
 The default location is http://localhost:5000
 ```
-richmond/backend> cd src
-richmond/backend/src> dotnet run
+richmond> cd src
+richmond/src> dotnet run
 ```
 
 # Deployment
