@@ -15,12 +15,13 @@ resources:
       space: richmond
 
 jobs:
-- name: backend-build
+- name: deploy
   plan:
   - get: richmond
     trigger: true
     passed:
       - backend-test
+      - frontend-test
   - task: backend-build
     config:
       platform: linux
@@ -33,15 +34,15 @@ jobs:
       outputs:
         - name: backend-publish
       run:
-        path: richmond/backend/build.sh
+        path: richmond/concourse/build.sh
         args:
-          - richmond/backend/src
+          - richmond/src
           - backend-publish
   - put: cf
     params:
-      manifest: richmond/backend/manifest.yml
+      manifest: richmond/manifest.yml
       path: backend-publish
-      app: api
+      app: richmond
 - name: backend-test
   plan:
   - get: richmond
@@ -56,9 +57,9 @@ jobs:
       inputs:
         - name: richmond
       run:
-        path: richmond/backend/test.sh
+        path: richmond/concourse/test.sh
         args:
-          - richmond/backend
+          - richmond/test-backend
 - name: frontend-test
   plan:
   - get: richmond
@@ -75,8 +76,5 @@ jobs:
       run:
         path: phantomjs
         args:
-          - richmond/frontend/jasmine/spec/run-jasmine.js
-          - richmond/frontend/jasmine/SpecRunner.html
-  - put: cf
-    params:
-      manifest: richmond/frontend/manifest.yml
+          - richmond/test-frontend/spec/run-jasmine.js
+          - richmond/test-frontend/jasmine/SpecRunner.html
