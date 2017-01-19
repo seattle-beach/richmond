@@ -59,7 +59,7 @@ jobs:
       run:
         path: richmond/concourse/test.sh
         args:
-          - richmond/test-backend
+          - richmond
 - name: frontend-test
   plan:
   - get: richmond
