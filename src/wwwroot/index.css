@@ -1,0 +1,157 @@
+
+@font-face {
+font-family: ProximaNova;	
+src: url("fonts/ProximaNova-Reg.otf") format("opentype");
+}
+
+@font-face {
+    font-family: ProximaNova;
+    src: url("fonts/ProximaNova-Bold.otf") format("opentype");
+    font-weight: bold;
+}
+
+body {
+	font-family: ProximaNova, Helvetica, Verdana, Sans-Serif;
+	background-color: #008774;
+	margin-top: 120px;
+	color: #ffffff;
+}
+
+div#clock {
+	font-size: 160px;
+	text-align: left;
+	width: 700px;
+}
+
+div#foodTrucks {
+	text-align: left;
+	margin-left: 80px;
+	background-color: #ffffff;
+	color: #666666;
+	padding: 50px;
+}
+
+.flex-container {
+	display: flex;
+	justify-content: space-between;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+h3 {
+	font: 36px/1.5 ProximaNova, Helvetica, Verdana, sans-serif;
+	margin: 0;
+	padding: 0;
+	color: #008774;
+}
+
+p.foodtrucks
+{
+	margin: 0;
+	padding: 0;
+	margin-bottom: 30px;
+	color: #666666
+}
+
+li p {
+  font: 200 18px/1.5 Helvetica, Verdana, sans-serif;
+  margin: 10px;
+  padding: 0;
+  margin-left: 25px;
+  font-style: italic;
+}
+
+li {
+  overflow: auto;
+  margin-bottom: 36px;
+}
+
+.foodtruck {
+    position: relative;
+}
+
+.foodtruck:before {
+    background-image: url('');
+	background-repeat: no-repeat;
+    background-position: right;
+    background-size: contain;
+    opacity: 0.7;
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 50%;
+    top: 40%;
+}
+
+.foodtruck.asian:before {
+    background-image: url('/images/food-types/asian.png');
+}
+
+.foodtruck.bbq:before {
+    background-image: url('/images/food-types/bbq.png');
+}
+
+.foodtruck.beverage:before {
+    background-image: url('/images/food-types/beverage.png');
+}
+
+.foodtruck.caribbean:before {
+    background-image: url('/images/food-types/caribbean.png');
+}
+
+.foodtruck.coffee:before {
+    background-image: url('/images/food-types/coffee.gif');
+}
+
+.foodtruck.dessert:before {
+    background-image: url('/images/food-types/dessert.jpg');
+}
+
+.foodtruck.ethiopian:before {
+    background-image: url('/images/food-types/ethiopian.jpg');
+}
+
+.foodtruck.hawaiian:before {
+    background-image: url('/images/food-types/hawaiian.png');
+}
+
+.foodtruck.hot-dogs:before {
+    background-image: url('/images/food-types/hot-dog.jpg');
+}
+
+.foodtruck.indian:before {
+    background-image: url('/images/food-types/indian.jpg');
+}
+
+.foodtruck.mediterrannean:before, .foodtruck.mediterranean:before  {
+    background-image: url('/images/food-types/mediterranean.jpg');
+}
+
+.foodtruck.mexican:before {
+    background-image: url('/images/food-types/mexican.jpg');
+}
+
+.foodtruck.pizza:before {
+    background-image: url('/images/food-types/pizza.jpg');
+}
+
+.foodtruck.sandwiches:before {
+    background-image: url('/images/food-types/sandwich.gif');
+}
+
+.foodtruck.seafood:before {
+    background-image: url('/images/food-types/seafood.jpg');
+}
+
+.foodtruck.southern:before {
+    background-image: url('/images/food-types/southern.jpg');
+}
+
+.foodtruck.vegetarian:before {
+    background-image: url('/images/food-types/vegetarian.jpg');
+}

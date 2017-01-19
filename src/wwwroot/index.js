@@ -30,7 +30,7 @@ DB.foodTruckWidget.prototype.updateSchedule = function()
                 inner += "</p>";
                 inner += "<ul>";
                 ret.foodTrucks.forEach(function(foodTruck) {
-                    inner += "<li><h3>";
+                    inner += "<li class=\"foodtruck " + foodTruck.type.toLowerCase().replace(' ', '-') + "\"><h3>";
                     inner += foodTruck.name;
                     inner += "</h3><p>";
                     inner += foodTruck.type;
