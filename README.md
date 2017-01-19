@@ -54,7 +54,7 @@ We're currently using the monitor between Lovelace and Hopper as our Concourse C
 1. Connect to the machine: `vnc://10.37.2.27` or `ci1.local`
 2. See the vagrant installation instructions [here](https://concourse.ci/vagrant.html)
 3. On the Concourse host, uncomment (or add a line to) the Vagrantfile like:
-```vagrant
+```ruby
 config.vm.network "forwarded_port", guest: 8080, host: 8080
 ```
 4. Visit http://10.37.2.27:8080, download `fly`
