@@ -76,5 +76,5 @@ jobs:
       run:
         path: phantomjs
         args:
-          - richmond/test-frontend/spec/run-jasmine.js
-          - richmond/test-frontend/jasmine/SpecRunner.html
+          - richmond/test-frontend/run-jasmine.js
+          - richmond/test-frontend/SpecRunner.html

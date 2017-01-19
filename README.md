@@ -16,18 +16,18 @@ For development, I would recommend [Visual Studio Code](https://code.visualstudi
 
 ### Run backend tests:
 ```
-richmond> cd backend-test
-richmond/backend-test> dotnet test
+richmond> cd test-backend
+richmond/test-backend> dotnet test
 ```
 
 ### Run frontend tests:
 With PhantomJS on the commandline:
 ```
-richmond> cd frontend-test
-richmond/frontend-test> phantomjs spec/run-jasmine.js SpecRunner.html
+richmond> cd test-frontend
+richmond/test-frontend> phantomjs run-jasmine.js SpecRunner.html
 ```
 
-Or, open `richmond/frontend-test/SpecRunner.html` in a JS-enabled web browser.
+Or, open `richmond/test-frontend/SpecRunner.html` in a JS-enabled web browser.
 
 ### Run server:
 The default location is http://localhost:5000
