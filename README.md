@@ -14,11 +14,20 @@ For development, I would recommend [Visual Studio Code](https://code.visualstudi
 ### Populate local dependency cache
 `richmond> dotnet restore`
 
-### Run tests:
+### Run backend tests:
 ```
 richmond> cd backend-test
 richmond/backend-test> dotnet test
 ```
+
+### Run frontend tests:
+With PhantomJS on the commandline:
+```
+richmond> cd frontend-test
+richmond/frontend-test> phantomjs spec/run-jasmine.js SpecRunner.html
+```
+
+Or, open `richmond/frontend-test/SpecRunner.html` in a JS-enabled web browser.
 
 ### Run server:
 The default location is http://localhost:5000
