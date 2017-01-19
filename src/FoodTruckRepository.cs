@@ -89,7 +89,8 @@ namespace Richmond
                 var date = schedule.Children[dateIndex].Children[0];
                 var dayOfWeek = date.Children[0].InnerHtml;
                 var trimmedDayOfWeek = dayOfWeek.Substring(0, dayOfWeek.Length - 1);
-                if (trimmedDayOfWeek.Equals(Enum.GetName(typeof(DayOfWeek), targetDay)))
+                var targetDayString = Enum.GetName(typeof(DayOfWeek), targetDay);
+                if (trimmedDayOfWeek.Equals(targetDayString))
                 {
                     var dayOfMonth = date.Children[1].InnerHtml;
                     var month = date.Children[2].InnerHtml;
@@ -100,7 +101,7 @@ namespace Richmond
                     IList<FoodTruckResponse.FoodTruck> foodTrucks = foodTruckList.Children.Select(ToFoodTruck).ToList();
                     var dateString = String.Join(" ", new string[] { dayOfWeek, dayOfMonth, month, year });
 
-                    return new FoodTruckResponse { FoodTrucks = foodTrucks, Date = dateString };
+                    return new FoodTruckResponse { FoodTrucks = foodTrucks, Date = dateString, DayOfWeek = targetDayString };
                 }
                 dateIndex = dateIndex + 2;
             }

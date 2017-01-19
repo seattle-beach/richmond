@@ -24,15 +24,14 @@ DB.foodTruckWidget.prototype.updateSchedule = function()
 
         success: function(ret){
             try {
-                var inner = "<p class='foodtrucks'>";
-                inner += "Occidental Park Food Trucks, "
-                inner += ret.date;
-                inner += "</p>";
+                var inner = "<h1 class='foodtrucks-title'>";
+                inner += ret.dayOfWeek;
+                inner += "'s Food Trucks</h1>";
                 inner += "<ul>";
                 ret.foodTrucks.forEach(function(foodTruck) {
-                    inner += "<li class=\"foodtruck " + foodTruck.type.toLowerCase().replace(' ', '-') + "\"><h3>";
+                    inner += "<li class=\"foodtruck " + foodTruck.type.toLowerCase().replace(' ', '-') + "\"><h2>";
                     inner += foodTruck.name;
-                    inner += "</h3><p>";
+                    inner += "</h2><p class='foodtruck-content'>";
                     inner += foodTruck.type;
                     inner += "</p></li>";
                 });
