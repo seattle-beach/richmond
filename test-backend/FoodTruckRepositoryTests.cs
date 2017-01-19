@@ -98,19 +98,24 @@ namespace Richmond.Tests
         [Fact]
         public void RequestsFoodTruckWebsite()
         {
-            var subject = new FoodTruckRepository(new MockHttpMessageHandler());
+            MockHttpMessageHandler httpHandler = new MockHttpMessageHandler();
+            var subject = new FoodTruckRepository(null, httpHandler, "https://food.example.com/trucks");
             var result = subject.RequestFoodTruckWebsite();
 
             Assert.Equal("my content", result);
+            Assert.Equal("https://food.example.com/trucks", httpHandler.requestedUri.ToString());
         }
 
         public class MockHttpMessageHandler : HttpMessageHandler
         {
+            public Uri requestedUri;
+
             protected override async Task<HttpResponseMessage> SendAsync(
                 HttpRequestMessage request,
                 CancellationToken cancellationToken
             )
             {
+                requestedUri = request.RequestUri;
                 var responseMessage = new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new StringContent("my content")

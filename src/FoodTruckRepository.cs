@@ -15,21 +15,19 @@ namespace Richmond
 
     public class FoodTruckRepository : IFoodTruckRepository
     {
-        private static readonly string foodTruckURI = System.Environment.GetEnvironmentVariable("FOODTRUCK_PATH");
-
         private readonly HttpMessageHandler _httpMessageHandler;
         private readonly IDateProvider _dateProvider;
+        private readonly string _foodTruckURI;
 
-        public FoodTruckRepository(IDateProvider dateProvider)
+        public FoodTruckRepository(IDateProvider dateProvider, HttpMessageHandler httpMessageHandler, string foodTruckURI)
         {
-            _httpMessageHandler = new HttpClientHandler();
-            _dateProvider = dateProvider;
+            _dateProvider = dateProvider ?? new DateProvider();
+            _httpMessageHandler = httpMessageHandler ?? new HttpClientHandler();
+            _foodTruckURI = foodTruckURI ?? System.Environment.GetEnvironmentVariable("FOODTRUCK_PATH");
         }
 
-        public FoodTruckRepository(HttpMessageHandler httpMessageHandler)
-        {
-            _httpMessageHandler = httpMessageHandler;
-        }
+        public FoodTruckRepository(IDateProvider dateProvider) : this(dateProvider, null, null)
+        {}
 
         public FoodTruckResponse ParseFoodTruckSite(string html)
         {
@@ -52,7 +50,7 @@ namespace Richmond
         public string RequestFoodTruckWebsite()
         {
             HttpClient client = new HttpClient(_httpMessageHandler);
-            var task = client.GetAsync(foodTruckURI);
+            var task = client.GetAsync(_foodTruckURI);
             var result = task.Result;
             return result.Content.ReadAsStringAsync().Result;
         }
