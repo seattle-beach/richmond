@@ -11,6 +11,13 @@ https://richmond.cfapps.io/
 For development, I would recommend [Visual Studio Code](https://code.visualstudio.com/) with the [C# plugin](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp).
 
 # Build and run locally
+### Environment variables
+```bash
+FOODTRUCK_PATH=http://www.seattlefoodtruck.com/schedule/occidental-park-food-truck-pod/
+CF_PASSWORD=
+CF_USERNAME=
+```
+
 ### Populate local dependency cache
 `richmond> dotnet restore`
 
@@ -47,7 +54,7 @@ We're currently using the monitor between Lovelace and Hopper as our Concourse C
 1. Connect to the machine: `vnc://10.37.2.27` or `ci1.local`
 2. See the vagrant installation instructions [here](https://concourse.ci/vagrant.html)
 3. On the Concourse host, uncomment (or add a line to) the Vagrantfile like:
-```
+```vagrant
 config.vm.network "forwarded_port", guest: 8080, host: 8080
 ```
 4. Visit http://10.37.2.27:8080, download `fly`

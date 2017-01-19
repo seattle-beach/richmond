@@ -15,7 +15,7 @@ namespace Richmond
 
     public class FoodTruckRepository : IFoodTruckRepository
     {
-        private const string foodTruckURI = "http://www.seattlefoodtruck.com/schedule/occidental-park-food-truck-pod/";
+        private static readonly string foodTruckURI = System.Environment.GetEnvironmentVariable("FOODTRUCK_PATH");
 
         private readonly HttpMessageHandler _httpMessageHandler;
         private readonly IDateProvider _dateProvider;
