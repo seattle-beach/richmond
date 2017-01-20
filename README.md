@@ -12,10 +12,10 @@ For development, I would recommend [Visual Studio Code](https://code.visualstudi
 
 # Build and run locally
 ### Environment variables
+Our workstation image includes [direnv](https://direnv.net/), so you should just be able to add these to a file named `.envrc` in the root of the project.
+
 ```bash
 FOODTRUCK_PATH=http://www.seattlefoodtruck.com/schedule/occidental-park-food-truck-pod/
-CF_PASSWORD=
-CF_USERNAME=
 ```
 
 ### Populate local dependency cache
@@ -23,8 +23,7 @@ CF_USERNAME=
 
 ### Run backend tests:
 ```
-richmond> cd test-backend
-richmond/test-backend> dotnet test
+richmond> dotnet test test-backend
 ```
 
 ### Run frontend tests:
@@ -43,6 +42,12 @@ richmond> cd src
 richmond/src> dotnet run
 ```
 
+### Custom scripts
+We also include some custom scripts at the root, which you can install with:
+```
+richmond> ./scripts/install.sh
+```
+
 # Deployment
 The app is deployed in the `seattle-beach` PWS org, space name `richmond`. We have a deployment service account `alidaka+richmond+cf@pivotal.io`; ask another beach person for the password.
 
@@ -52,12 +57,12 @@ To `cf push` or update the CI pipeline, environment variables `CF_PASSWORD` and 
 We're currently using the monitor between Lovelace and Hopper as our Concourse CI server.
 
 1. Connect to the machine: `vnc://10.37.2.27` or `ci1.local`
-2. See the vagrant installation instructions [here](https://concourse.ci/vagrant.html)
+2. See the [vagrant installation instructions](https://concourse.ci/vagrant.html)
 3. On the Concourse host, uncomment (or add a line to) the Vagrantfile like:
 ```ruby
 config.vm.network "forwarded_port", guest: 8080, host: 8080
 ```
-4. Visit http://10.37.2.27:8080, download `fly`
+4. Visit [http://10.37.2.27:8080](http://10.37.2.27:8080) and login, then download `fly`
 5. `richmond/concourse> ./update-concourse.sh`
 
 # dotnet core resources

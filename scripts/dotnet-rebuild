@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+dotnet clean $1
+dotnet build $1

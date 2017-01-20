@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+PROJECT=$1
+
+if [ '' != $PROJECT ]; then
+  pushd $PROJECT > /dev/null
+fi
+
+rm -rf bin/ obj/
+
+if [ '' != $PROJECT ]; then
+  popd > /dev/null
+fi
+
+echo "Cleaned ${PROJECT}"
