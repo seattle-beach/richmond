@@ -11,7 +11,9 @@ namespace Richmond
     {
         DateTime IDateProvider.Now()
         {
-            return DateTime.Now;
+            DateTime utcNow = DateTime.UtcNow;
+            var pacificTimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/Vancouver");
+            return TimeZoneInfo.ConvertTime(utcNow, pacificTimeZone);
         }
     }
 }
