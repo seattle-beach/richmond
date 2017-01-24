@@ -18,10 +18,10 @@ describe("Index", function() {
 
     it("populates clock div every half second", function() {
       this.subject.updateTime();
-      expect(this.root.innerHTML).toEqual("3:02:01");
+      expect(this.root.innerHTML).toEqual("3:02");
 
-      jasmine.clock().tick(1000);
-      expect(this.root.innerHTML).toEqual("3:02:02");
+      jasmine.clock().tick(1000 * 60);
+      expect(this.root.innerHTML).toEqual("3:03");
     });
   });
 
