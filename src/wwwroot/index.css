@@ -1,5 +1,5 @@
 @font-face {
-  font-family: ProximaNova; 
+  font-family: ProximaNova;
   src: url("fonts/ProximaNova-Reg.otf") format("opentype");
 }
 
@@ -12,7 +12,7 @@
 body {
   font-family: ProximaNova, Helvetica, Verdana, Sans-Serif;
   background-color: #008774;
-  margin-top: 120px;
+  margin-top: 60px;
   color: #fff;
 }
 
@@ -20,10 +20,11 @@ h1 {
   font-family: ProximaNova, Helvetica, Verdana, Sans-Serif;
   font-size: 52px;
   font-weight: bold;
+  margin-top: 10px;
 }
 
 h2 {
-  font: 60px ProximaNova, Helvetica, Verdana, sans-serif;
+  font: 55px ProximaNova, Helvetica, Verdana, sans-serif;
   padding: 0;
   margin: 0;
   color: #008774;
@@ -31,13 +32,13 @@ h2 {
 
 ul {
   list-style-type: none;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding: 0;
 }
 
 li {
   overflow: auto;
-  margin-bottom: 36px;
+  margin-bottom: 20px;
+  margin-left: 0;
   line-height: 1.5;
 }
 
@@ -45,15 +46,17 @@ li {
 #clock {
   font-size: 220px;
   text-align: left;
-  width: 900px;
+  width: 650px;
 }
 
 #foodTrucks {
-  margin-left: 80px;
+  margin-left: 60px;
   background-color: #fff;
   color: #666666;
   padding: 20px 50px;
   font: lighter 36px Helvetica, Verdana, sans-serif;
+  max-width: 1000px;
+  height: 850px;
 }
 
 
@@ -62,8 +65,7 @@ li {
   justify-content: space-between;
 }
 
-.foodtruck-content
-{
+.foodtruck-content {
   margin: 0;
   padding: 0;
 }
@@ -79,7 +81,7 @@ li {
 
 .foodtruck:before {
     background-image: url('');
-	  background-repeat: no-repeat;
+    background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
     opacity: 0.7;
@@ -87,8 +89,9 @@ li {
     position: absolute;
     right: 0;
     bottom: 0;
-    left: 75%;
+    left: 85%;
     top: 0;
+    max-width: 175px;
 }
 
 .foodtruck.asian:before {
