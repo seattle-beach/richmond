@@ -127,7 +127,7 @@ li {
 }
 
 .foodtruck.hot-dogs:before {
-    background-image: url('/images/food-types/hot-dog.jpg');
+    background-image: url('/images/food-types/hot-dogs.jpg');
 }
 
 .foodtruck.indian:before {
@@ -155,7 +155,7 @@ li {
 }
 
 .foodtruck.southern:before {
-    background-image: url('/images/food-types/southern.jpg');
+    background-image: url('/images/food-types/southern.png');
 }
 
 .foodtruck.vegetarian:before {

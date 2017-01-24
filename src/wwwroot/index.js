@@ -10,6 +10,9 @@ function boot() {
     foodTruckWidget.updateSchedule();
 }
 
+function cssClassesForFoodtruckType(type) {
+    return "foodtruck " + type.toLowerCase().replace(new RegExp(' ', 'g'), '-').replace(new RegExp('-?/-?', 'g'), ' ');
+}
 
 DB.foodTruckWidget = function(root) {
     this._root = root;
@@ -29,7 +32,7 @@ DB.foodTruckWidget.prototype.updateSchedule = function()
                 inner += "'s Food Trucks</h1>";
                 inner += "<ul>";
                 ret.foodTrucks.forEach(function(foodTruck) {
-                    inner += "<li class=\"foodtruck " + foodTruck.type.toLowerCase().replace(' ', '-') + "\"><h2>";
+                    inner += "<li class=\"" + cssClassesForFoodtruckType(foodTruck.type) + "\"><h2>";
                     inner += foodTruck.name;
                     inner += "</h2><p class='foodtruck-content'>";
                     inner += foodTruck.type;

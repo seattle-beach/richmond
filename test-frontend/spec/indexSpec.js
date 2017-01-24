@@ -41,14 +41,16 @@ describe("Index", function() {
     it("populate the food trucks widget every five minutes", function() {
 
       jasmine.Ajax.stubRequest('/foodtrucks').andReturn({
-        "responseText": "{\"foodTrucks\":[{\"name\":\"Bread Circuses\",\"type\":\"Burgers / Gastropub\"}], \"date\":\"Monday, 16 January 2017\", \"dayOfWeek\": \"Monday\"}"
+        "responseText": "{\"foodTrucks\":[{\"name\":\"Bread Circuses\",\"type\":\"Burgers / Hot Dogs\"}], \"date\":\"Monday, 16 January 2017\", \"dayOfWeek\": \"Monday\"}"
       });
 
       this.subject.updateSchedule();
 
       expect(this.root.innerHTML).toContain('Bread Circuses');
-      expect(this.root.innerHTML).toContain('Burgers / Gastropub');
+      expect(this.root.innerHTML).toContain('Burgers / Hot Dogs');
       expect(this.root.innerHTML).toContain('Monday');
+      var foodTruckClasses = this.root.getElementsByClassName('foodtruck')[0].className;
+      expect(foodTruckClasses).toEqual('foodtruck burgers hot-dogs');
       expect(jasmine.Ajax.requests.mostRecent().url).toBe('/foodtrucks');
 
       jasmine.Ajax.requests.reset();
