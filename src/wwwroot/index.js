@@ -18,7 +18,7 @@ DB.foodTruckWidget = function(root) {
 DB.foodTruckWidget.prototype.updateSchedule = function()
 {
     $.ajax({type: "GET",
-        url: "/foodtrucks", 
+        url: "/foodtrucks",
         async: true,
         crossDomain: true,
 
@@ -59,11 +59,9 @@ DB.clock.prototype.updateTime = function() {
     var today = new Date();
     var h = today.getHours();
     var m = today.getMinutes();
-    var s = today.getSeconds();
     m = this._checkTime(m);
-    s = this._checkTime(s);
-    this._root.innerHTML = h + ":" + m + ":" + s;
-    setTimeout(this.updateTime.bind(this), 500);
+    this._root.innerHTML = h + ":" + m;
+    setTimeout(this.updateTime.bind(this), 1000);
 };
 
 DB.clock.prototype._checkTime = function(i) {
