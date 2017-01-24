@@ -27,7 +27,7 @@ richmond> dotnet test test-backend
 ```
 
 ### Run frontend tests:
-With PhantomJS on the commandline: (if phantomJs is not installed first run 'brew install phantomjs')
+With PhantomJS on the commandline: (if phantomJs is not installed first run `brew install phantomjs`)
 ```
 richmond> cd test-frontend
 richmond/test-frontend> phantomjs run-jasmine.js SpecRunner.html
