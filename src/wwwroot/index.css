@@ -94,20 +94,8 @@ li {
     max-width: 175px;
 }
 
-.foodtruck.asian:before {
-    background-image: url('/images/food-types/asian.png');
-}
-
-.foodtruck.bbq:before {
-    background-image: url('/images/food-types/bbq.png');
-}
-
 .foodtruck.beverage:before {
     background-image: url('/images/food-types/beverage.png');
-}
-
-.foodtruck.caribbean:before {
-    background-image: url('/images/food-types/caribbean.png');
 }
 
 .foodtruck.coffee:before {
@@ -118,16 +106,36 @@ li {
     background-image: url('/images/food-types/dessert.jpg');
 }
 
-.foodtruck.ethiopian:before {
-    background-image: url('/images/food-types/ethiopian.jpg');
+.foodtruck.sandwiches:before {
+    background-image: url('/images/food-types/sandwich.gif');
 }
 
-.foodtruck.hawaiian:before {
-    background-image: url('/images/food-types/hawaiian.png');
+.foodtruck.burgers:before {
+    background-image: url('/images/food-types/burgers.png');
 }
 
 .foodtruck.hot-dogs:before {
     background-image: url('/images/food-types/hot-dogs.jpg');
+}
+
+.foodtruck.pizza:before {
+    background-image: url('/images/food-types/pizza.jpg');
+}
+
+.foodtruck.southern:before {
+    background-image: url('/images/food-types/southern.png');
+}
+
+.foodtruck.bbq:before {
+    background-image: url('/images/food-types/bbq.png');
+}
+
+.foodtruck.seafood:before {
+    background-image: url('/images/food-types/seafood.jpg');
+}
+
+.foodtruck.hawaiian:before {
+    background-image: url('/images/food-types/hawaiian.jpg');
 }
 
 .foodtruck.indian:before {
@@ -138,24 +146,24 @@ li {
     background-image: url('/images/food-types/mediterranean.jpg');
 }
 
+.foodtruck.caribbean:before {
+    background-image: url('/images/food-types/caribbean.png');
+}
+
 .foodtruck.mexican:before {
     background-image: url('/images/food-types/mexican.jpg');
 }
 
-.foodtruck.pizza:before {
-    background-image: url('/images/food-types/pizza.jpg');
+.foodtruck.asian:before {
+    background-image: url('/images/food-types/asian.png');
 }
 
-.foodtruck.sandwiches:before {
-    background-image: url('/images/food-types/sandwich.gif');
+.foodtruck.native-american:before {
+    background-image: url('/images/food-types/native-american.jpg');
 }
 
-.foodtruck.seafood:before {
-    background-image: url('/images/food-types/seafood.jpg');
-}
-
-.foodtruck.southern:before {
-    background-image: url('/images/food-types/southern.png');
+.foodtruck.english:before {
+    background-image: url('/images/food-types/english.jpg');
 }
 
 .foodtruck.vegetarian:before {
