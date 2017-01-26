@@ -67,4 +67,36 @@ describe("Index", function() {
       expect(jasmine.Ajax.requests.mostRecent().url).toBe('/foodtrucks');
     });
   });
+
+  describe("dynamicWidgetChanges", function() {
+    beforeEach(function() {
+      var baseTime = new Date(2013, 9, 23, 15, 59, 0);
+      jasmine.clock().install().mockDate(baseTime);
+      this.subject = new DB.timeSensitiveWidget(this.root, "earlyWidget", "lateWidget");
+    });
+
+    afterEach(function() {
+      jasmine.clock().uninstall();
+    });
+
+    it("swaps the bus widget in for the food truck widget at 4pm", function() {
+      this.subject.update();
+      expect(this.subject.widget).toEqual("earlyWidget")
+      jasmine.clock().tick(1000 * 60);
+      expect(this.subject.widget).toEqual("lateWidget")
+    });
+  });
+
+  describe("updatesBusWidget", function() {
+    beforeEach(function() {
+      jasmine.clock().install().mockDate();
+      jasmine.Ajax.install();
+      this.subject = new DB.busScheduleWidget(this.root);
+    });
+
+    afterEach(function() {
+      jasmine.Ajax.uninstall();
+      jasmine.clock().uninstall();
+    });
+  });
 });
