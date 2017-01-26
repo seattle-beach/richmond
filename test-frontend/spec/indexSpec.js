@@ -59,12 +59,6 @@ describe("Index", function() {
       var foodTruckClasses = this.root.getElementsByClassName('foodtruck')[0].className;
       expect(foodTruckClasses).toEqual('foodtruck burgers hot-dogs');
       expect(jasmine.Ajax.requests.mostRecent().url).toBe('/foodtrucks');
-
-      jasmine.Ajax.requests.reset();
-      expect(jasmine.Ajax.requests.count()).toEqual(0);
-      this.subject.update();
-      expect(jasmine.Ajax.requests.count()).toEqual(1);
-      expect(jasmine.Ajax.requests.mostRecent().url).toBe('/foodtrucks');
     });
   });
 
@@ -112,7 +106,7 @@ describe("Index", function() {
     });
   });
 
-  describe("updatesBusWidget", function() {
+  describe("updatesBusSchedule", function() {
     beforeEach(function() {
       jasmine.clock().install().mockDate();
       jasmine.Ajax.install();
@@ -122,6 +116,18 @@ describe("Index", function() {
     afterEach(function() {
       jasmine.Ajax.uninstall();
       jasmine.clock().uninstall();
+    });
+
+    it("parses data for the 99 bus", function() {
+      jasmine.Ajax.stubRequest('/buses').andReturn({
+        "responseText": "{\"buses\":[{\"shortName\":\"99\",\"longName\":\"Belltown Via 1st Ave\", \"eta\":\"-2\", \"status\": \"scheduled\"}, {\"shortName\":\"99\",\"longName\":\"Belltown Via 1st Ave\", \"eta\":\"5\", \"status\": \"late\"}]}"
+      });
+
+      this.subject.update();
+
+      expect(this.root.innerHTML).toContain("99");
+      expect(this.root.innerHTML).toContain("-2");
+      expect(this.root.innerHTML).toContain("5");
     });
   });
 });

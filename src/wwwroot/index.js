@@ -8,20 +8,20 @@ function boot() {
     clock.updateTime();
 
     var root = document.getElementById("dynamic-content");
-    timeSensitiveWidget = new DB.timeSensitiveWidget(new DB.foodTruckWidget(root), 2);
+    timeSensitiveWidget = new DB.timeSensitiveWidget(new DB.foodTruckWidget(root), new DB.busScheduleWidget(root));
     timeSensitiveWidget.update();
-}
+};
 
 function cssClassesForFoodtruckType(type) {
     return "foodtruck " + type.toLowerCase().replace(new RegExp(' ', 'g'), '-').replace(new RegExp('-?/-?', 'g'), ' ');
-}
+};
 
 DB.timeSensitiveWidget = function(earlyWidget, lateWidget) {
     this._earlyWidget = earlyWidget;
     this._lateWidget = lateWidget;
 
     this.widget = earlyWidget;
-}
+};
 
 DB.timeSensitiveWidget.prototype.update = function() {
     var hour = new Date().getHours();
@@ -34,6 +34,41 @@ DB.timeSensitiveWidget.prototype.update = function() {
     this.widget.update();
 
     setTimeout(this.update.bind(this), this.widget.updateInterval);
+};
+
+DB.busScheduleWidget = function(root) {
+  this._root = root;
+  this.updateInterval = 30 * 1000;
+};
+
+DB.busScheduleWidget.prototype.update = function() {
+    $.ajax({type: "GET",
+        url: "/buses",
+        async: true,
+        crossDomain: true,
+
+        success: function(ret){
+            try {
+                var inner = "<h1 class='foodtrucks-title'>buses</h1>";
+                inner += "<ul>";
+                ret.buses.forEach(function(bus) {
+                    inner += "<li class=\"" + "\"><h2>";
+                    inner += bus.shortName;
+                    inner += "</h2><p class='foodtruck-content'>";
+                    inner += bus.eta;
+                    inner += "</p></li>";
+                });
+                inner += "</ul>";
+                this._root.innerHTML = inner;
+            } catch (e) {
+                console.log("ERRRR: " + e);
+            }
+
+        }.bind(this),
+        error: function(e) {
+          console.log('ERROR: ' + e);
+        }
+    });
 };
 
 DB.foodTruckWidget = function(root) {
