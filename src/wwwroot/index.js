@@ -60,12 +60,18 @@ DB.clock = function(root) {
 
 DB.clock.prototype.updateTime = function() {
     var today = new Date();
-    var h = today.getHours();
+    var h = this._getHours(today);
     var m = today.getMinutes();
     m = this._checkTime(m);
     this._root.innerHTML = h + ":" + m;
     setTimeout(this.updateTime.bind(this), 1000);
 };
+
+DB.clock.prototype._getHours = function(today) {
+    var h = today.getHours();
+    if (h > 12) {h = h%12};
+    return h;
+}
 
 DB.clock.prototype._checkTime = function(i) {
     if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10

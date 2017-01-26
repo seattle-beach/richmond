@@ -23,6 +23,13 @@ describe("Index", function() {
       jasmine.clock().tick(1000 * 60);
       expect(this.root.innerHTML).toEqual("3:03");
     });
+
+    it("displays 12h time", function() {
+      var baseTime = new Date(2013, 9, 23, 13, 2, 1);
+      jasmine.clock().mockDate(baseTime);
+      this.subject.updateTime();
+      expect(this.root.innerHTML).toEqual("1:02");
+    });
   });
 
   describe("updatesSchedule", function() {
