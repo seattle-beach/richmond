@@ -45,13 +45,13 @@ describe("Index", function() {
       jasmine.clock().uninstall();
     });
 
-    it("populate the food trucks widget every five minutes", function() {
+    it("populate the food trucks widget", function() {
 
       jasmine.Ajax.stubRequest('/foodtrucks').andReturn({
         "responseText": "{\"foodTrucks\":[{\"name\":\"Bread Circuses\",\"type\":\"Burgers / Hot Dogs\"}], \"date\":\"Monday, 16 January 2017\", \"dayOfWeek\": \"Monday\"}"
       });
 
-      this.subject.updateSchedule();
+      this.subject.update();
 
       expect(this.root.innerHTML).toContain('Bread Circuses');
       expect(this.root.innerHTML).toContain('Burgers / Hot Dogs');
@@ -62,7 +62,7 @@ describe("Index", function() {
 
       jasmine.Ajax.requests.reset();
       expect(jasmine.Ajax.requests.count()).toEqual(0);
-      jasmine.clock().tick(5* 60 * 1000 + 1);
+      this.subject.update();
       expect(jasmine.Ajax.requests.count()).toEqual(1);
       expect(jasmine.Ajax.requests.mostRecent().url).toBe('/foodtrucks');
     });
@@ -70,9 +70,10 @@ describe("Index", function() {
 
   describe("dynamicWidgetChanges", function() {
     beforeEach(function() {
-      var baseTime = new Date(2013, 9, 23, 15, 59, 0);
-      jasmine.clock().install().mockDate(baseTime);
-      this.subject = new DB.timeSensitiveWidget(this.root, "earlyWidget", "lateWidget");
+      jasmine.clock().install()
+
+      this.earlyWidget = jasmine.createSpyObj("earlyWidget", ["update", "updateInterval"]);
+      this.lateWidget = jasmine.createSpyObj("lateWidget", ["update", "updateInterval"]);
     });
 
     afterEach(function() {
@@ -80,10 +81,34 @@ describe("Index", function() {
     });
 
     it("swaps the bus widget in for the food truck widget at 4pm", function() {
+      var baseTime = new Date(2013, 9, 23, 15, 59, 0);
+      jasmine.clock().mockDate(baseTime);
+
+      var interval = 60 * 1000;
+      this.earlyWidget.updateInterval = interval;
+      this.subject = new DB.timeSensitiveWidget(this.earlyWidget, this.lateWidget);
+
       this.subject.update();
-      expect(this.subject.widget).toEqual("earlyWidget")
-      jasmine.clock().tick(1000 * 60);
-      expect(this.subject.widget).toEqual("lateWidget")
+      expect(this.subject.widget).toEqual(this.earlyWidget);
+      jasmine.clock().tick(interval);
+      expect(this.subject.widget).toEqual(this.lateWidget);
+    });
+
+    it("updates only on the inner widget's schedule", function() {
+      var baseTime = new Date(2013, 9, 23, 15, 0, 0);
+      jasmine.clock().mockDate(baseTime);
+
+      var interval = 5 * 60 * 1000;
+      var truckMock = jasmine.createSpyObj("truckMock", ["update", "updateInterval"]);
+      truckMock.updateInterval = interval;
+      this.subject = new DB.timeSensitiveWidget(truckMock, this.lateWidget);
+
+      this.subject.update();
+      expect(truckMock.update.calls.count()).toEqual(1);
+      jasmine.clock().tick(interval - 1);
+      expect(truckMock.update.calls.count()).toEqual(1);
+      jasmine.clock().tick(1);
+      expect(truckMock.update.calls.count()).toEqual(2);
     });
   });
 

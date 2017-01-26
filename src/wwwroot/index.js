@@ -7,16 +7,16 @@ function boot() {
     var clock = new DB.clock(document.getElementById("clock"));
     clock.updateTime();
 
-    // TODO
-    timeSensitiveWidget = new DB.timeSensitiveWidget(document.getElementById("dynamic-content"), 1,2);
+    var root = document.getElementById("dynamic-content");
+    timeSensitiveWidget = new DB.timeSensitiveWidget(new DB.foodTruckWidget(root), 2);
+    timeSensitiveWidget.update();
 }
 
 function cssClassesForFoodtruckType(type) {
     return "foodtruck " + type.toLowerCase().replace(new RegExp(' ', 'g'), '-').replace(new RegExp('-?/-?', 'g'), ' ');
 }
 
-DB.timeSensitiveWidget = function(root, earlyWidget, lateWidget) {
-    this._root = root;
+DB.timeSensitiveWidget = function(earlyWidget, lateWidget) {
     this._earlyWidget = earlyWidget;
     this._lateWidget = lateWidget;
 
@@ -30,13 +30,18 @@ DB.timeSensitiveWidget.prototype.update = function() {
     } else if (hour ) {
         this.widget = this._lateWidget;
     }
+
+    this.widget.update();
+
+    setTimeout(this.update.bind(this), this.widget.updateInterval);
 };
 
 DB.foodTruckWidget = function(root) {
     this._root = root;
+    this.updateInterval = 5 * 60 * 1000;
 };
 
-DB.foodTruckWidget.prototype.updateSchedule = function() {
+DB.foodTruckWidget.prototype.update = function() {
     $.ajax({type: "GET",
         url: "/foodtrucks",
         async: true,
@@ -61,15 +66,12 @@ DB.foodTruckWidget.prototype.updateSchedule = function() {
                 console.log("ERRRR: " + e);
             }
 
-            }.bind(this),
-            error: function(e) {
-                console.log('ERROR: ' + e);
-            }
+        }.bind(this),
+        error: function(e) {
+          console.log('ERROR: ' + e);
+        }
     });
-
-    setTimeout(this.updateSchedule.bind(this), 5 * 60 * 1000);
 };
-
 
 DB.clock = function(root) {
     this._root = root;
