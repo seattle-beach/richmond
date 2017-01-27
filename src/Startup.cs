@@ -13,6 +13,8 @@ namespace Richmond
             services.AddMvc();
             services.AddSingleton<IFoodTruckRepository, FoodTruckRepository>();
             services.AddSingleton<IDateProvider, DateProvider>();
+            services.AddSingleton<IBusScheduleClient, BusScheduleClient>();
+            services.AddSingleton<IHttpClientWrapper, HttpClientWrapper>();
         }
 
         public void Configure(IApplicationBuilder app)
