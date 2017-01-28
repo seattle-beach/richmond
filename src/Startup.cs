@@ -13,6 +13,7 @@ namespace Richmond
             services.AddMvc();
             services.AddSingleton<IFoodTruckRepository, FoodTruckRepository>();
             services.AddSingleton<IDateProvider, DateProvider>();
+            services.AddSingleton<IBusService, BusService>();
         }
 
         public void Configure(IApplicationBuilder app)

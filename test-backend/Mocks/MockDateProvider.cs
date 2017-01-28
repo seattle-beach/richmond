@@ -11,9 +11,14 @@ namespace Richmond.Tests
             _now = now;
         }
 
-        DateTime IDateProvider.Now()
+        public DateTime Now()
         {
             return _now;
+        }
+
+        public ulong EpochNow()
+        {
+            return 0;
         }
     }
 }

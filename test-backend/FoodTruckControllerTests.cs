@@ -27,7 +27,6 @@ namespace Richmond.Tests
 
             Assert.Equal(4, payload.FoodTrucks.Count);
         }
-
     }
 
     public class FoodTruckRepositoryMock : IFoodTruckRepository
@@ -42,6 +41,7 @@ namespace Richmond.Tests
         {
             return context.Invoke(f => f.ParseFoodTruckSite(html));
         }
+
         public string RequestFoodTruckWebsite()
         {
             return context.Invoke(f => f.RequestFoodTruckWebsite());

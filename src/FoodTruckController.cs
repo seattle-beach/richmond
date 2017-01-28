@@ -17,6 +17,5 @@ namespace Richmond
             var response = _foodTruckRepository.ParseFoodTruckSite(_foodTruckRepository.RequestFoodTruckWebsite());
             return new OkObjectResult(response);
         }
-
     }
 }
