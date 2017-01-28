@@ -120,7 +120,8 @@ describe("Index", function() {
 
     it("parses data for the 99 bus", function() {
       jasmine.Ajax.stubRequest('/buses').andReturn({
-        "responseText": "{\"buses\":[{\"shortName\":\"99\",\"longName\":\"Belltown Via 1st Ave\", \"eta\":\"-2\", \"status\": \"scheduled\"}, {\"shortName\":\"99\",\"longName\":\"Belltown Via 1st Ave\", \"eta\":\"5\", \"status\": \"late\"}]}"
+        "responseText": "{\"buses\":[{\"shortName\":\"99\",\"longName\":\"Belltown Via 1st Ave\", \"eta\":-2, \"status\": \"scheduled\"}," +
+        "{\"shortName\":\"99\",\"longName\":\"Belltown Via 1st Ave\", \"eta\":\"5\", \"status\": \"late\"}]}"
       });
 
       this.subject.update();

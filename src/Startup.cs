@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft​.Extensions​.DependencyInjection;
+using Richmond.BusClient;
 using System.IO;
 
 namespace Richmond
@@ -13,6 +14,10 @@ namespace Richmond
             services.AddMvc();
             services.AddSingleton<IFoodTruckRepository, FoodTruckRepository>();
             services.AddSingleton<IDateProvider, DateProvider>();
+            services.AddSingleton<IBusScheduleClient, BusScheduleClient>();
+            services.AddSingleton<IHttpClientWrapper, HttpClientWrapper>();
+            services.AddSingleton<ILogger, Logger>();
+            services.AddSingleton<IBusFactory, BusFactory>();
         }
 
         public void Configure(IApplicationBuilder app)

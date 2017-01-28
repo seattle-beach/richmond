@@ -49,13 +49,12 @@ DB.busScheduleWidget.prototype.update = function() {
 
         success: function(ret){
             try {
-                var inner = "<h1 class='foodtrucks-title'>buses</h1>";
+                var inner = "<h1 class='foodtrucks-title'>99</h1>";
                 inner += "<ul>";
                 ret.buses.forEach(function(bus) {
-                    inner += "<li class=\"" + "\"><h2>";
-                    inner += bus.shortName;
-                    inner += "</h2><p class='foodtruck-content'>";
-                    inner += bus.eta;
+                    inner += "<li class=\"" + "\">";
+                    inner += "<p class='foodtruck-content'>";
+                    inner += bus.eta + " - " + bus.status;
                     inner += "</p></li>";
                 });
                 inner += "</ul>";
