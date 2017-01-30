@@ -49,15 +49,21 @@ DB.busScheduleWidget.prototype.update = function() {
 
         success: function(ret){
             try {
-                var inner = "<h1 class='foodtrucks-title'>99</h1>";
-                inner += "<ul>";
+                var inner = "<div><h1 class='bus-stop-title'>S Jackson St & Occidental Ave</h1>";
+                inner += "<h2 class='bus-description-title'>" + ret.buses[0].shortName + " - " + ret.buses[0].longName +"</h2>"
+                inner += "<ul class='bus-list'>";
                 ret.buses.forEach(function(bus) {
                     inner += "<li class=\"" + "\">";
-                    inner += "<p class='foodtruck-content'>";
-                    inner += bus.eta + " - " + bus.status;
+                    inner += "<p class='bus-arrival " + bus.status + "'>";
+                    inner += "arriving ";
+                    if (bus.status != "scheduled")
+                    {
+                        inner += bus.status + " ";
+                    }
+                    inner += "in " + bus.eta + "m";
                     inner += "</p></li>";
                 });
-                inner += "</ul>";
+                inner += "</ul></div>";
                 this._root.innerHTML = inner;
             } catch (e) {
                 console.log("ERRRR: " + e);

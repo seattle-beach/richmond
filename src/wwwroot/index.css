@@ -169,3 +169,29 @@ li {
 .foodtruck.vegetarian:before {
     background-image: url('/images/food-types/vegetarian.jpg');
 }
+
+.on-time {
+    color: blue;
+}
+
+.late {
+    color: red;
+}
+
+.scheduled {
+    color: grey;
+}
+
+.early {
+    color: purple;
+
+}
+
+.bus-arrival {
+    padding: 0;
+    margin: 0;
+}
+
+.bus-list {
+    text-align: right;
+}
