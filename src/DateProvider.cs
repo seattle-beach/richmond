@@ -14,7 +14,7 @@ namespace Richmond
 
         public long EpochNow()
         {
-            DateTime utcNow = this.Now();
+            DateTime utcNow = DateTime.UtcNow;
             var delta = utcNow - epoch;
             return (long)Math.Floor(delta.TotalMilliseconds);
         }
