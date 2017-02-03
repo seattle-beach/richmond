@@ -49,6 +49,13 @@ li {
   width: 650px;
 }
 
+#countdown {
+  font-size: 600px;
+  text-align: left;
+  margin-top: 120px;
+  margin-left: 380px;
+}
+
 #dynamic-content {
   margin-left: 60px;
   background-color: #fff;

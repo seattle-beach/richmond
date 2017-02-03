@@ -32,6 +32,35 @@ describe("Index", function() {
     });
   });
 
+  describe("countdownTimeToStandup", function() {
+    beforeEach(function() {
+      var baseTime = new Date(2013, 9, 23, 9, 1, 0);
+      jasmine.clock().install().mockDate(baseTime);
+      this.subject = new DB.standUpCountdown(this.root);
+    });
+
+    afterEach(function() {
+      jasmine.clock().uninstall();
+    });
+
+    it("countdown updates correctly", function() {
+      this.subject.update();
+      expect(this.root.innerHTML).toContain("5:00");
+
+      jasmine.clock().tick(1000);
+      this.subject.update();
+      expect(this.root.innerHTML).toContain("4:59");
+    });
+
+    it("countdown clock is formatted following m:ss", function() {
+      var baseTime = new Date(2013, 9, 23, 9, 5, 55);
+      jasmine.clock().mockDate(baseTime);
+      this.subject.update();
+      expect(this.root.innerHTML).toContain("0:05");
+    });
+
+  });
+
   describe("updatesSchedule", function() {
 
     beforeEach(function() {
@@ -59,6 +88,70 @@ describe("Index", function() {
       var foodTruckClasses = this.root.getElementsByClassName('foodtruck')[0].className;
       expect(foodTruckClasses).toEqual('foodtruck burgers hot-dogs');
       expect(jasmine.Ajax.requests.mostRecent().url).toBe('/foodtrucks');
+    });
+  });
+
+  describe("mainContentChanges", function() {
+    beforeEach(function() {
+      jasmine.clock().install()
+
+      this.standUpCountdown = jasmine.createSpyObj("standUpCountdown", ["update"]);
+      this.regularContent = jasmine.createSpyObj("regularContent", ["update"]);
+      this.subject = new DB.mainContentDecider(this.standUpCountdown, this.regularContent);
+    });
+
+    afterEach(function() {
+      jasmine.clock().uninstall();
+    });
+
+    it("swaps the standup content in for the regular content at 9:01 am", function() {
+      var baseTime = new Date(2013, 9, 23, 9, 0, 59);
+      jasmine.clock().mockDate(baseTime);
+
+      this.subject.update();
+      expect(this.subject.widget).toEqual(this.regularContent);
+      jasmine.clock().tick(1000);
+      expect(this.subject.widget).toEqual(this.standUpCountdown);
+    });
+
+    it("swaps the regular content in for the standup content at 9:06 am", function() {
+      var baseTime = new Date(2013, 9, 23, 9, 5, 59);
+      jasmine.clock().mockDate(baseTime);
+
+      this.subject.update();
+      expect(this.subject.widget).toEqual(this.standUpCountdown);
+      jasmine.clock().tick(1000);
+      expect(this.subject.widget).toEqual(this.regularContent);
+    });
+
+    it("the mainContentDecider triggers the countdown clock to update during the countdown", function() {
+      var baseTime = new Date(2013, 9, 23, 9, 1, 0);
+      jasmine.clock().mockDate(baseTime);
+      this.subject.update();
+      expect(this.standUpCountdown.update).toHaveBeenCalled();
+      this.standUpCountdown.update.calls.reset();
+
+      jasmine.clock().tick(1000);
+      expect(this.standUpCountdown.update).toHaveBeenCalled();
+    });
+
+    it("the mainContentDecider does not triggers the countdown clock to update once the countdown is over", function() {
+      var baseTime = new Date(2013, 9, 23, 9, 6, 0);
+      jasmine.clock().mockDate(baseTime);
+      this.subject.update();
+      expect(this.standUpCountdown.update).not.toHaveBeenCalled();
+    });
+
+    it("after swapping in the regular content for the standup countdown, " +
+      "the mainContentDecider does not trigger updates of the regular content", function() {
+      var baseTime = new Date(2013, 9, 23, 9, 8, 0);
+      jasmine.clock().mockDate(baseTime);
+      this.subject.update();
+      expect(this.regularContent.update).toHaveBeenCalled();
+      this.regularContent.update.calls.reset();
+
+      jasmine.clock().tick(5000);
+      expect(this.regularContent.update).not.toHaveBeenCalled();
     });
   });
 

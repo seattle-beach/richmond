@@ -2,18 +2,81 @@
 
 var DB = {};
 var timeSensitiveWidget = {};
+var mainContent = {};
 
 function boot() {
+    var root = document.getElementById("root");
+
+    mainContent = new DB.mainContentDecider(new DB.standUpCountdown(root), new DB.regularContent(root));
+    mainContent.update();
+}
+
+DB.standUpCountdown = function(root) {
+  this._root = root;
+};
+
+DB.standUpCountdown.prototype.update = function() {
+    var seconds = new Date().getSeconds();
+    var minutes = new Date().getMinutes();
+    var secondsRemaining = 60 - seconds;
+    var minutesRemaining = 5 - minutes;
+    if (secondsRemaining == 60) {
+        minutesRemaining = 6 - minutes;
+        secondsRemaining = 0;
+    }
+    secondsRemaining = new DB.clock().formatTime(secondsRemaining);
+
+    this._root.innerHTML = "<div id='countdown'><div>"+ minutesRemaining + ":" + secondsRemaining + "</div></div>";
+}
+
+DB.regularContent = function(root) {
+  this._root = root;
+};
+
+DB.regularContent.prototype.update = function(){
+    var inner = "<div class='flex-container'><div id='dynamic-content'></div><div id='clock'></div></div>";
+    this._root.innerHTML = inner;
+
     var clock = new DB.clock(document.getElementById("clock"));
     clock.updateTime();
 
-    var root = document.getElementById("dynamic-content");
-    timeSensitiveWidget = new DB.timeSensitiveWidget(new DB.foodTruckWidget(root), new DB.busScheduleWidget(root));
+    var dynamicContent = document.getElementById("dynamic-content");
+    timeSensitiveWidget = new DB.timeSensitiveWidget(new DB.foodTruckWidget(dynamicContent), new DB.busScheduleWidget(dynamicContent));
     timeSensitiveWidget.update();
 };
 
 function cssClassesForFoodtruckType(type) {
     return "foodtruck " + type.toLowerCase().replace(new RegExp(' ', 'g'), '-').replace(new RegExp('-?/-?', 'g'), ' ');
+};
+
+DB.mainContentDecider = function(standUpCountdown, regularContent) {
+    this._standUpCountdown = standUpCountdown;
+    this._regularContent = regularContent;
+    this.widget = this._regularContent;
+    this.widget.update();
+    this._isCountdown = false;
+};
+
+DB.mainContentDecider.prototype.update = function() {
+    var hour = new Date().getHours();
+    var minutes = new Date().getMinutes();
+    var isCountdown = false;
+    var widget = this._regularContent;
+    if (hour == 9 && (minutes < 6 && minutes > 0)) {
+        isCountdown = true;
+        widget = this._standUpCountdown;
+    }
+
+    if (isCountdown != this._isCountdown) {
+        this.widget = widget;
+        this._isCountdown = isCountdown;
+        this.widget.update();
+    }
+    if (this._isCountdown) {
+        this.widget.update();
+    }
+
+    setTimeout(this.update.bind(this), 500);
 };
 
 DB.timeSensitiveWidget = function(earlyWidget, lateWidget) {
@@ -121,7 +184,7 @@ DB.clock.prototype.updateTime = function() {
     var today = new Date();
     var h = this._getHours(today);
     var m = today.getMinutes();
-    m = this._checkTime(m);
+    m = this.formatTime(m);
     this._root.innerHTML = h + ":" + m;
     setTimeout(this.updateTime.bind(this), 1000);
 };
@@ -132,7 +195,7 @@ DB.clock.prototype._getHours = function(today) {
     return h;
 }
 
-DB.clock.prototype._checkTime = function(i) {
+DB.clock.prototype.formatTime = function(i) {
     if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
     return i;
 };
