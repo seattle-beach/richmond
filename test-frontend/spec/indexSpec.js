@@ -9,7 +9,7 @@ describe("Index", function() {
     beforeEach(function() {
       var baseTime = new Date(2013, 9, 23, 3, 2, 1);
       jasmine.clock().install().mockDate(baseTime);
-      this.subject = new DB.clock(this.root);
+      this.subject = new DB.clock();
     });
 
     afterEach(function() {
@@ -18,17 +18,17 @@ describe("Index", function() {
 
     it("populates clock div every half second", function() {
       this.subject.updateTime();
-      expect(this.root.innerHTML).toEqual("3:02");
+      expect(this.subject.el.innerHTML).toEqual("3:02");
 
       jasmine.clock().tick(1000 * 60);
-      expect(this.root.innerHTML).toEqual("3:03");
+      expect(this.subject.el.innerHTML).toEqual("3:03");
     });
 
     it("displays 12h time", function() {
       var baseTime = new Date(2013, 9, 23, 13, 2, 1);
       jasmine.clock().mockDate(baseTime);
       this.subject.updateTime();
-      expect(this.root.innerHTML).toEqual("1:02");
+      expect(this.subject.el.innerHTML).toEqual("1:02");
     });
   });
 
@@ -224,4 +224,95 @@ describe("Index", function() {
       expect(this.root.innerHTML).toContain("5");
     });
   });
+
+  describe("widgetSwapper", function() {
+    var element1, element2
+
+    beforeEach(function() {
+      element1 = document.createElement("span");
+      element2 = document.createElement("p");
+      jasmine.clock().install().mockDate();
+      this.subject = new DB.widgetSwapper();
+    });
+
+    afterEach(function() {
+      jasmine.clock().uninstall();
+    });
+
+    it("without any widgets the widget swapper is blank", function() {
+      expect(this.subject.el.tagName).toEqual("DIV");
+      expect(this.subject.el.innerHTML).toEqual("");
+    });
+
+    it("with only one widget the widget swapper displays that widget", function() {
+      var element = document.createElement("span");
+      this.subject.addWidget({el:element});
+      this.subject.update();
+      expect(this.subject.el.firstChild).toBe(element);
+
+    });
+
+    it("swaps widgets based on start time", function() {
+      this.subject.addWidget({el:element1}, 10, 5);
+      this.subject.addWidget({el:element2}, 14, 30);
+
+      var baseTime = new Date(2013, 9, 23, 10, 5, 0);
+      jasmine.clock().mockDate(baseTime);
+      this.subject.update();
+      expect(this.subject.el.firstChild.tagName).toEqual("SPAN");
+
+      jasmine.clock().tick(5 * 60 * 60 * 1000);
+      this.subject.update();
+      expect(this.subject.el.firstChild.tagName).toEqual("P");
+    })
+
+    it("swaps based on the minutes when the hours are equal", function() {
+      this.subject.addWidget({el:element1}, 10, 5);
+      this.subject.addWidget({el:element2}, 10, 30);
+
+      var baseTime = new Date(2013, 9, 23, 10, 5, 0);
+      jasmine.clock().mockDate(baseTime);
+      this.subject.update();
+      expect(this.subject.el.firstChild.tagName).toEqual("SPAN");
+
+      jasmine.clock().tick(25 * 60 * 1000);
+      this.subject.update();
+      expect(this.subject.el.firstChild.tagName).toEqual("P");
+    })
+
+    it("swaps widgets based on start time regardless of the order they were added in", function() {
+      this.subject.addWidget({el:element1}, 14, 30);
+      this.subject.addWidget({el:element2}, 10, 5);
+
+      var baseTime = new Date(2013, 9, 23, 10, 5, 0);
+      jasmine.clock().mockDate(baseTime);
+      this.subject.update();
+      expect(this.subject.el.firstChild.tagName).toEqual("P");
+
+      jasmine.clock().tick(5 * 60 * 60 * 1000);
+      this.subject.update();
+      expect(this.subject.el.firstChild.tagName).toEqual("SPAN");
+    })
+
+    it("uses the most recently added widget if the start time is the same as another", function() {
+      this.subject.addWidget({el:element1}, 14, 30);
+      this.subject.addWidget({el:element2}, 14, 30);
+
+      var baseTime = new Date(2013, 9, 23, 14, 30, 0);
+      jasmine.clock().mockDate(baseTime);
+      this.subject.update();
+      expect(this.subject.el.firstChild.tagName).toEqual("P");
+    })
+
+    it("uses the lastest scheduled widget if the time is before any widgets start time", function() {
+      this.subject.addWidget({el:element1}, 10, 5);
+      this.subject.addWidget({el:element2}, 14, 30);
+
+      var baseTime = new Date(2013, 9, 23, 9, 30, 0);
+      jasmine.clock().mockDate(baseTime);
+      this.subject.update();
+      expect(this.subject.el.firstChild.tagName).toEqual("P");
+    })
+  });
+
 });

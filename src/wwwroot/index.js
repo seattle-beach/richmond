@@ -34,11 +34,12 @@ DB.regularContent = function(root) {
 };
 
 DB.regularContent.prototype.update = function(){
-    var inner = "<div class='flex-container'><div id='dynamic-content'></div><div id='clock'></div></div>";
+    var inner = "<div class='flex-container'><div id='dynamic-content'></div></div>";
     this._root.innerHTML = inner;
 
-    var clock = new DB.clock(document.getElementById("clock"));
+    var clock = new DB.clock();
     clock.updateTime();
+    this._root.querySelector(".flex-container").appendChild(clock.el);
 
     var dynamicContent = document.getElementById("dynamic-content");
     timeSensitiveWidget = new DB.timeSensitiveWidget(new DB.foodTruckWidget(dynamicContent), new DB.busScheduleWidget(dynamicContent));
@@ -97,6 +98,37 @@ DB.timeSensitiveWidget.prototype.update = function() {
     this.widget.update();
 
     setTimeout(this.update.bind(this), this.widget.updateInterval);
+};
+
+DB.widgetSwapper = function(){
+    this.el = document.createElement("div");
+    this.widgets = [];
+}
+
+DB.widgetSwapper.prototype.addWidget = function(widget, hours, minutes) {
+    this.widgets.push({widget: widget, startTime: hours * 60 + minutes});
+    this.widgets.sort(function(a, b) {
+        return a.startTime - b.startTime;
+    });
+};
+
+DB.widgetSwapper.prototype.update = function() {
+    var currentHour = new Date().getHours();
+    var currentMinute = new Date().getMinutes();
+    var currentTimeInMinutes = (currentHour * 60) + currentMinute;
+    var newWidget = this.widgets[this.widgets.length - 1].widget;
+    for(var i=0; i < this.widgets.length; i++) {
+        var widget = this.widgets[i];
+        if (widget.startTime <= currentTimeInMinutes) {
+            newWidget = widget.widget;
+        }
+    }
+
+    if (this.el.firstChild){
+        this.el.removeChild(this.el.firstChild);
+    }
+
+    this.el.appendChild(newWidget.el);
 };
 
 DB.busScheduleWidget = function(root) {
@@ -176,8 +208,9 @@ DB.foodTruckWidget.prototype.update = function() {
     });
 };
 
-DB.clock = function(root) {
-    this._root = root;
+DB.clock = function() {
+    this.el = document.createElement("div");
+    this.el.id = "clock"
 };
 
 DB.clock.prototype.updateTime = function() {
@@ -185,7 +218,7 @@ DB.clock.prototype.updateTime = function() {
     var h = this._getHours(today);
     var m = today.getMinutes();
     m = this.formatTime(m);
-    this._root.innerHTML = h + ":" + m;
+    this.el.innerHTML = h + ":" + m;
     setTimeout(this.updateTime.bind(this), 1000);
 };
 
