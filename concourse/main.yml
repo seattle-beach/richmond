@@ -16,9 +16,10 @@ resources:
 
   - name: tracker
     type: tracker
-    source: {{TRACKER_API_TOKEN}}
-    project_id: "1948575"
-    tracker_url: https://www.pivotaltracker.com
+    source:
+      token: {{TRACKER_API_TOKEN}}
+      project_id: "1948575"
+      tracker_url: https://www.pivotaltracker.com
 
 jobs:
 - name: deploy
