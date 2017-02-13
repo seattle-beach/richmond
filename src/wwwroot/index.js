@@ -1,18 +1,23 @@
 "use strict";
 
 var DB = {};
-var timeSensitiveWidget = {};
 var mainContent = {};
 
 function boot() {
-    var root = document.getElementById("root");
+    var widgetSwapper = new DB.widgetSwapper();
+    widgetSwapper.addWidget(new DB.standUpCountdown(), 9, 1);
+    widgetSwapper.addWidget(new DB.regularContent(), 9, 6);
+    widgetSwapper.update();
 
-    mainContent = new DB.mainContentDecider(new DB.standUpCountdown(root), new DB.regularContent(root));
-    mainContent.update();
+    setInterval( function() {widgetSwapper.update()}, 500);
+
+    document.querySelector("#root").appendChild(widgetSwapper.el);
 }
 
-DB.standUpCountdown = function(root) {
-  this._root = root;
+DB.standUpCountdown = function() {
+    this.el = document.createElement("div");
+    this.el.id = "countdown";
+    this.updateInterval = 500;
 };
 
 DB.standUpCountdown.prototype.update = function() {
@@ -26,86 +31,51 @@ DB.standUpCountdown.prototype.update = function() {
     }
     secondsRemaining = new DB.clock().formatTime(secondsRemaining);
 
-    this._root.innerHTML = "<div id='countdown'><div>"+ minutesRemaining + ":" + secondsRemaining + "</div></div>";
+    this.el.innerHTML = "<div>"+ minutesRemaining + ":" + secondsRemaining + "</div>";
 }
 
-DB.regularContent = function(root) {
-  this._root = root;
+DB.regularContent = function() {
+    this.el = document.createElement("div");
+
+    var inner = "<div class='flex-container'><div id='dynamic-content'></div></div>";
+
+    this.el.innerHTML = inner;
+    this._clock = new DB.clock();
+    this.el.querySelector(".flex-container").appendChild(this._clock.el);
+
+    this._widgetSwapper = new DB.widgetSwapper();
+    this._widgetSwapper.addWidget(new DB.foodTruckWidget(), 0, 0);
+    this._widgetSwapper.addWidget(new DB.busScheduleWidget(), 14, 0);
+    this.el.querySelector("#dynamic-content").appendChild(this._widgetSwapper.el);
+
+    this.updateInterval = 30 * 1000;
 };
 
 DB.regularContent.prototype.update = function(){
-    var inner = "<div class='flex-container'><div id='dynamic-content'></div></div>";
-    this._root.innerHTML = inner;
-
-    var clock = new DB.clock();
-    clock.updateTime();
-    this._root.querySelector(".flex-container").appendChild(clock.el);
-
-    var dynamicContent = document.getElementById("dynamic-content");
-    timeSensitiveWidget = new DB.timeSensitiveWidget(new DB.foodTruckWidget(dynamicContent), new DB.busScheduleWidget(dynamicContent));
-    timeSensitiveWidget.update();
+    this._clock.updateTime();
+    this._widgetSwapper.update();
 };
 
 function cssClassesForFoodtruckType(type) {
     return "foodtruck " + type.toLowerCase().replace(new RegExp(' ', 'g'), '-').replace(new RegExp('-?/-?', 'g'), ' ');
 };
 
-DB.mainContentDecider = function(standUpCountdown, regularContent) {
-    this._standUpCountdown = standUpCountdown;
-    this._regularContent = regularContent;
-    this.widget = this._regularContent;
-    this.widget.update();
-    this._isCountdown = false;
-};
-
-DB.mainContentDecider.prototype.update = function() {
-    var hour = new Date().getHours();
-    var minutes = new Date().getMinutes();
-    var isCountdown = false;
-    var widget = this._regularContent;
-    if (hour == 9 && (minutes < 6 && minutes > 0)) {
-        isCountdown = true;
-        widget = this._standUpCountdown;
-    }
-
-    if (isCountdown != this._isCountdown) {
-        this.widget = widget;
-        this._isCountdown = isCountdown;
-        this.widget.update();
-    }
-    if (this._isCountdown) {
-        this.widget.update();
-    }
-
-    setTimeout(this.update.bind(this), 500);
-};
-
-DB.timeSensitiveWidget = function(earlyWidget, lateWidget) {
-    this._earlyWidget = earlyWidget;
-    this._lateWidget = lateWidget;
-
-    this.widget = earlyWidget;
-};
-
-DB.timeSensitiveWidget.prototype.update = function() {
-    var hour = new Date().getHours();
-    if (hour < 16) {
-        this.widget = this._earlyWidget;
-    } else if (hour ) {
-        this.widget = this._lateWidget;
-    }
-
-    this.widget.update();
-
-    setTimeout(this.update.bind(this), this.widget.updateInterval);
-};
-
 DB.widgetSwapper = function(){
     this.el = document.createElement("div");
     this.widgets = [];
+    this.widgetUpdater;
 }
 
 DB.widgetSwapper.prototype.addWidget = function(widget, hours, minutes) {
+    if (typeof widget.el !== 'object'){
+        throw new Error("Widget must have an 'el' property of type object");
+    }
+    if (typeof widget.updateInterval !== 'number'){
+        throw new Error("Widget must have an 'updateInterval' property of type number");
+    }
+    if (typeof widget.update !== 'function'){
+        throw new Error("Widget must have an 'update' function");
+    }
     this.widgets.push({widget: widget, startTime: hours * 60 + minutes});
     this.widgets.sort(function(a, b) {
         return a.startTime - b.startTime;
@@ -124,16 +94,28 @@ DB.widgetSwapper.prototype.update = function() {
         }
     }
 
-    if (this.el.firstChild){
+    if (this.el.firstChild)
+    {
+        this._stopUpdating();
         this.el.removeChild(this.el.firstChild);
     }
 
+    this._startUpdating(newWidget);
     this.el.appendChild(newWidget.el);
 };
 
-DB.busScheduleWidget = function(root) {
-  this._root = root;
-  this.updateInterval = 30 * 1000;
+DB.widgetSwapper.prototype._startUpdating = function(widget) {
+    widget.update();
+    this.widgetUpdater = setInterval( function() {widget.update()}, widget.updateInterval);
+}
+
+DB.widgetSwapper.prototype._stopUpdating = function() {
+    clearInterval(this.widgetUpdater);
+}
+
+DB.busScheduleWidget = function() {
+    this.el = document.createElement("div");
+    this.updateInterval = 30 * 1000;
 };
 
 DB.busScheduleWidget.prototype.update = function() {
@@ -159,7 +141,7 @@ DB.busScheduleWidget.prototype.update = function() {
                     inner += "</p></li>";
                 });
                 inner += "</ul></div>";
-                this._root.innerHTML = inner;
+                this.el.innerHTML = inner;
             } catch (e) {
                 console.log("ERRRR: " + e);
             }
@@ -171,8 +153,9 @@ DB.busScheduleWidget.prototype.update = function() {
     });
 };
 
-DB.foodTruckWidget = function(root) {
-    this._root = root;
+DB.foodTruckWidget = function() {
+    this.el = document.createElement("div");
+    this.el.class = "foodtruck";
     this.updateInterval = 5 * 60 * 1000;
 };
 
@@ -196,7 +179,7 @@ DB.foodTruckWidget.prototype.update = function() {
                     inner += "</p></li>";
                 });
                 inner += "</ul>";
-                this._root.innerHTML = inner;
+                this.el.innerHTML = inner;
             } catch (e) {
                 console.log("ERRRR: " + e);
             }
@@ -210,7 +193,7 @@ DB.foodTruckWidget.prototype.update = function() {
 
 DB.clock = function() {
     this.el = document.createElement("div");
-    this.el.id = "clock"
+    this.el.id = "clock";
 };
 
 DB.clock.prototype.updateTime = function() {

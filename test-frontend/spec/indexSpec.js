@@ -36,7 +36,7 @@ describe("Index", function() {
     beforeEach(function() {
       var baseTime = new Date(2013, 9, 23, 9, 1, 0);
       jasmine.clock().install().mockDate(baseTime);
-      this.subject = new DB.standUpCountdown(this.root);
+      this.subject = new DB.standUpCountdown();
     });
 
     afterEach(function() {
@@ -45,18 +45,18 @@ describe("Index", function() {
 
     it("countdown updates correctly", function() {
       this.subject.update();
-      expect(this.root.innerHTML).toContain("5:00");
+      expect(this.subject.el.innerHTML).toContain("5:00");
 
       jasmine.clock().tick(1000);
       this.subject.update();
-      expect(this.root.innerHTML).toContain("4:59");
+      expect(this.subject.el.innerHTML).toContain("4:59");
     });
 
     it("countdown clock is formatted following m:ss", function() {
       var baseTime = new Date(2013, 9, 23, 9, 5, 55);
       jasmine.clock().mockDate(baseTime);
       this.subject.update();
-      expect(this.root.innerHTML).toContain("0:05");
+      expect(this.subject.el.innerHTML).toContain("0:05");
     });
 
   });
@@ -66,7 +66,7 @@ describe("Index", function() {
     beforeEach(function() {
       jasmine.clock().install().mockDate();
       jasmine.Ajax.install();
-      this.subject = new DB.foodTruckWidget(this.root);
+      this.subject = new DB.foodTruckWidget();
     });
 
     afterEach(function() {
@@ -82,120 +82,12 @@ describe("Index", function() {
 
       this.subject.update();
 
-      expect(this.root.innerHTML).toContain('Bread Circuses');
-      expect(this.root.innerHTML).toContain('Burgers / Hot Dogs');
-      expect(this.root.innerHTML).toContain('Monday');
-      var foodTruckClasses = this.root.getElementsByClassName('foodtruck')[0].className;
+      expect(this.subject.el.innerHTML).toContain('Bread Circuses');
+      expect(this.subject.el.innerHTML).toContain('Burgers / Hot Dogs');
+      expect(this.subject.el.innerHTML).toContain('Monday');
+      var foodTruckClasses = this.subject.el.getElementsByClassName('foodtruck')[0].className;
       expect(foodTruckClasses).toEqual('foodtruck burgers hot-dogs');
       expect(jasmine.Ajax.requests.mostRecent().url).toBe('/foodtrucks');
-    });
-  });
-
-  describe("mainContentChanges", function() {
-    beforeEach(function() {
-      jasmine.clock().install()
-
-      this.standUpCountdown = jasmine.createSpyObj("standUpCountdown", ["update"]);
-      this.regularContent = jasmine.createSpyObj("regularContent", ["update"]);
-      this.subject = new DB.mainContentDecider(this.standUpCountdown, this.regularContent);
-    });
-
-    afterEach(function() {
-      jasmine.clock().uninstall();
-    });
-
-    it("swaps the standup content in for the regular content at 9:01 am", function() {
-      var baseTime = new Date(2013, 9, 23, 9, 0, 59);
-      jasmine.clock().mockDate(baseTime);
-
-      this.subject.update();
-      expect(this.subject.widget).toEqual(this.regularContent);
-      jasmine.clock().tick(1000);
-      expect(this.subject.widget).toEqual(this.standUpCountdown);
-    });
-
-    it("swaps the regular content in for the standup content at 9:06 am", function() {
-      var baseTime = new Date(2013, 9, 23, 9, 5, 59);
-      jasmine.clock().mockDate(baseTime);
-
-      this.subject.update();
-      expect(this.subject.widget).toEqual(this.standUpCountdown);
-      jasmine.clock().tick(1000);
-      expect(this.subject.widget).toEqual(this.regularContent);
-    });
-
-    it("the mainContentDecider triggers the countdown clock to update during the countdown", function() {
-      var baseTime = new Date(2013, 9, 23, 9, 1, 0);
-      jasmine.clock().mockDate(baseTime);
-      this.subject.update();
-      expect(this.standUpCountdown.update).toHaveBeenCalled();
-      this.standUpCountdown.update.calls.reset();
-
-      jasmine.clock().tick(1000);
-      expect(this.standUpCountdown.update).toHaveBeenCalled();
-    });
-
-    it("the mainContentDecider does not triggers the countdown clock to update once the countdown is over", function() {
-      var baseTime = new Date(2013, 9, 23, 9, 6, 0);
-      jasmine.clock().mockDate(baseTime);
-      this.subject.update();
-      expect(this.standUpCountdown.update).not.toHaveBeenCalled();
-    });
-
-    it("after swapping in the regular content for the standup countdown, " +
-      "the mainContentDecider does not trigger updates of the regular content", function() {
-      var baseTime = new Date(2013, 9, 23, 9, 8, 0);
-      jasmine.clock().mockDate(baseTime);
-      this.subject.update();
-      expect(this.regularContent.update).toHaveBeenCalled();
-      this.regularContent.update.calls.reset();
-
-      jasmine.clock().tick(5000);
-      expect(this.regularContent.update).not.toHaveBeenCalled();
-    });
-  });
-
-  describe("dynamicWidgetChanges", function() {
-    beforeEach(function() {
-      jasmine.clock().install()
-
-      this.earlyWidget = jasmine.createSpyObj("earlyWidget", ["update", "updateInterval"]);
-      this.lateWidget = jasmine.createSpyObj("lateWidget", ["update", "updateInterval"]);
-    });
-
-    afterEach(function() {
-      jasmine.clock().uninstall();
-    });
-
-    it("swaps the bus widget in for the food truck widget at 4pm", function() {
-      var baseTime = new Date(2013, 9, 23, 15, 59, 0);
-      jasmine.clock().mockDate(baseTime);
-
-      var interval = 60 * 1000;
-      this.earlyWidget.updateInterval = interval;
-      this.subject = new DB.timeSensitiveWidget(this.earlyWidget, this.lateWidget);
-
-      this.subject.update();
-      expect(this.subject.widget).toEqual(this.earlyWidget);
-      jasmine.clock().tick(interval);
-      expect(this.subject.widget).toEqual(this.lateWidget);
-    });
-
-    it("updates only on the inner widget's schedule", function() {
-      var baseTime = new Date(2013, 9, 23, 15, 0, 0);
-      jasmine.clock().mockDate(baseTime);
-
-      var interval = 5 * 60 * 1000;
-      var truckMock = jasmine.createSpyObj("truckMock", ["update", "updateInterval"]);
-      truckMock.updateInterval = interval;
-      this.subject = new DB.timeSensitiveWidget(truckMock, this.lateWidget);
-
-      this.subject.update();
-      expect(truckMock.update.calls.count()).toEqual(1);
-      jasmine.clock().tick(interval - 1);
-      expect(truckMock.update.calls.count()).toEqual(1);
-      jasmine.clock().tick(1);
-      expect(truckMock.update.calls.count()).toEqual(2);
     });
   });
 
@@ -203,7 +95,7 @@ describe("Index", function() {
     beforeEach(function() {
       jasmine.clock().install().mockDate();
       jasmine.Ajax.install();
-      this.subject = new DB.busScheduleWidget(this.root);
+      this.subject = new DB.busScheduleWidget();
     });
 
     afterEach(function() {
@@ -219,18 +111,29 @@ describe("Index", function() {
 
       this.subject.update();
 
-      expect(this.root.innerHTML).toContain("99");
-      expect(this.root.innerHTML).toContain("-2");
-      expect(this.root.innerHTML).toContain("5");
+      expect(this.subject.el.innerHTML).toContain("99");
+      expect(this.subject.el.innerHTML).toContain("-2");
+      expect(this.subject.el.innerHTML).toContain("5");
     });
   });
 
   describe("widgetSwapper", function() {
-    var element1, element2
+    var element1, element2, widget1, widget2
 
     beforeEach(function() {
       element1 = document.createElement("span");
       element2 = document.createElement("p");
+      widget1 = {
+        update: jasmine.createSpy('widget1.update'),
+        el: element1,
+        updateInterval: 5000
+      };
+      widget2 = {
+        update: jasmine.createSpy('widget2.update'),
+        el: element2,
+        updateInterval: 5000
+      };
+
       jasmine.clock().install().mockDate();
       this.subject = new DB.widgetSwapper();
     });
@@ -245,16 +148,14 @@ describe("Index", function() {
     });
 
     it("with only one widget the widget swapper displays that widget", function() {
-      var element = document.createElement("span");
-      this.subject.addWidget({el:element});
+      this.subject.addWidget(widget1);
       this.subject.update();
-      expect(this.subject.el.firstChild).toBe(element);
-
+      expect(this.subject.el.firstChild).toBe(element1);
     });
 
     it("swaps widgets based on start time", function() {
-      this.subject.addWidget({el:element1}, 10, 5);
-      this.subject.addWidget({el:element2}, 14, 30);
+      this.subject.addWidget(widget1, 10, 5);
+      this.subject.addWidget(widget2, 14, 30);
 
       var baseTime = new Date(2013, 9, 23, 10, 5, 0);
       jasmine.clock().mockDate(baseTime);
@@ -267,8 +168,8 @@ describe("Index", function() {
     })
 
     it("swaps based on the minutes when the hours are equal", function() {
-      this.subject.addWidget({el:element1}, 10, 5);
-      this.subject.addWidget({el:element2}, 10, 30);
+      this.subject.addWidget(widget1, 10, 5);
+      this.subject.addWidget(widget2, 10, 30);
 
       var baseTime = new Date(2013, 9, 23, 10, 5, 0);
       jasmine.clock().mockDate(baseTime);
@@ -281,8 +182,8 @@ describe("Index", function() {
     })
 
     it("swaps widgets based on start time regardless of the order they were added in", function() {
-      this.subject.addWidget({el:element1}, 14, 30);
-      this.subject.addWidget({el:element2}, 10, 5);
+      this.subject.addWidget(widget1, 14, 30);
+      this.subject.addWidget(widget2, 10, 5);
 
       var baseTime = new Date(2013, 9, 23, 10, 5, 0);
       jasmine.clock().mockDate(baseTime);
@@ -295,8 +196,8 @@ describe("Index", function() {
     })
 
     it("uses the most recently added widget if the start time is the same as another", function() {
-      this.subject.addWidget({el:element1}, 14, 30);
-      this.subject.addWidget({el:element2}, 14, 30);
+      this.subject.addWidget(widget1, 14, 30);
+      this.subject.addWidget(widget2, 14, 30);
 
       var baseTime = new Date(2013, 9, 23, 14, 30, 0);
       jasmine.clock().mockDate(baseTime);
@@ -305,13 +206,76 @@ describe("Index", function() {
     })
 
     it("uses the lastest scheduled widget if the time is before any widgets start time", function() {
-      this.subject.addWidget({el:element1}, 10, 5);
-      this.subject.addWidget({el:element2}, 14, 30);
+      this.subject.addWidget(widget1, 10, 5);
+      this.subject.addWidget(widget2, 14, 30);
 
       var baseTime = new Date(2013, 9, 23, 9, 30, 0);
       jasmine.clock().mockDate(baseTime);
       this.subject.update();
       expect(this.subject.el.firstChild.tagName).toEqual("P");
+    })
+
+    it("triggers updates on the currently active widget at the specified time interval", function() {
+      var baseTime = new Date(2013, 9, 23, 9, 8, 0);
+      jasmine.clock().mockDate(baseTime);
+
+      this.subject.addWidget(widget1, 0, 0);
+      this.subject.update();
+      expect(widget1.update).toHaveBeenCalled();
+      widget1.update.calls.reset();
+
+      jasmine.clock().tick(widget1.updateInterval);
+      expect(widget1.update).toHaveBeenCalled();
+    })
+
+    it("stops updating a widget after it is no longer active", function(){
+      var baseTime = new Date(2013, 9, 23, 0, 0, 0);
+      jasmine.clock().mockDate(baseTime);
+
+      this.subject.addWidget(widget1, 0, 0);
+      this.subject.addWidget(widget2, 2, 0);
+      this.subject.update();
+      expect(widget1.update).toHaveBeenCalled();
+
+      jasmine.clock().tick(2 * 60 * 60 * 1000);
+      this.subject.update();
+      widget1.update.calls.reset();
+
+      jasmine.clock().tick(widget1.updateInterval);
+      expect(widget1.update).not.toHaveBeenCalled();
+    })
+
+    it("throws an error if you try to add a widget without an el property of type object", function() {
+      expect(
+        function() {
+          var badWidget = {
+            update: jasmine.createSpy('widget.update'),
+            updateInterval: 5000
+          };
+          this.subject.addWidget(badWidget);
+        }.bind(this)).toThrowError("Widget must have an 'el' property of type object");
+    })
+
+    it("throws an error if you try to add a widget without an updateInterval property of type number", function() {
+      expect(
+        function() {
+          var badWidget = {
+            el: element1,
+            update: jasmine.createSpy('widget.update')
+          };
+          this.subject.addWidget(badWidget);
+        }.bind(this)).toThrowError("Widget must have an 'updateInterval' property of type number");
+    })
+
+    it("throws an error if you try to add a widget without an update function", function() {
+      expect(
+        function() {
+          var badWidget = {
+            el: element1,
+            updateInterval: 5000
+          };
+          this.subject.addWidget(badWidget);
+        }.bind(this)).toThrowError("Widget must have an 'update' function");
     })
   });
 
