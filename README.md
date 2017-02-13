@@ -68,6 +68,12 @@ config.vm.network "forwarded_port", guest: 8080, host: 8080
 4. Visit [http://10.37.2.27:8080](http://10.37.2.27:8080) and login, then download `fly`
 5. `richmond/concourse> ./update-concourse.sh`
 
+Optionally, start vagrant on Mac reboot (note: may depend on VB/vagrant version? Currently does not work...):
+```bash
+richmond/concourse> ln -s vagrant.startup.plist ~/Library/LaunchAgents/vagrant.startup.plist
+richmond/concourse> launchctl load -w ~/Library/LaunchAgents/vagrant.startup.plist
+```
+
 In order to update the concourse pipelines, you'll need to set the `TRACKER_API_TOKEN` environment variable. You can get it from the Profile page on the seattle-beach@pivotal.io user on [pivotaltracker.com](https://www.pivotaltracker.com)
 
 # dotnet core resources
