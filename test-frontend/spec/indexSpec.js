@@ -33,10 +33,14 @@ describe("Index", function() {
   });
 
   describe("countdownTimeToStandup", function() {
+
     beforeEach(function() {
       var baseTime = new Date(2013, 9, 23, 9, 1, 0);
       jasmine.clock().install().mockDate(baseTime);
-      this.subject = new DB.standUpCountdown();
+      player = {
+        play: jasmine.createSpy('play')
+      };
+      this.subject = new DB.standUpCountdown(player);
     });
 
     afterEach(function() {
@@ -59,6 +63,12 @@ describe("Index", function() {
       expect(this.subject.el.innerHTML).toContain("0:05");
     });
 
+    it("countdown clock plays a sound when the coundown is up", function() {
+      var baseTime = new Date(2013, 9, 23, 9, 6, 0);
+      jasmine.clock().mockDate(baseTime);
+      this.subject.update();
+      expect(this.subject.player.play).toHaveBeenCalled();
+    });
   });
 
   describe("updatesSchedule", function() {

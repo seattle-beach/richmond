@@ -5,8 +5,9 @@ var mainContent = {};
 
 function boot() {
     var widgetSwapper = new DB.widgetSwapper();
-    widgetSwapper.addWidget(new DB.standUpCountdown(), 9, 1);
-    widgetSwapper.addWidget(new DB.regularContent(), 9, 6);
+    var player = new Audio('/audio/bell.mp3');
+    widgetSwapper.addWidget(new DB.standUpCountdown(player), 9, 1);
+    widgetSwapper.addWidget(new DB.regularContent(), 9, 6, 1);
     widgetSwapper.update();
 
     setInterval( function() {widgetSwapper.update()}, 500);
@@ -14,10 +15,15 @@ function boot() {
     document.querySelector("#root").appendChild(widgetSwapper.el);
 }
 
-DB.standUpCountdown = function() {
+DB.standUpCountdown = function(player) {
+    if (typeof player.play !== 'function'){
+        throw new Error("player must have a 'play' function");
+    }
+
     this.el = document.createElement("div");
     this.el.id = "countdown";
     this.updateInterval = 500;
+    this.player = player;
 };
 
 DB.standUpCountdown.prototype.update = function() {
@@ -32,6 +38,10 @@ DB.standUpCountdown.prototype.update = function() {
     secondsRemaining = new DB.clock().formatTime(secondsRemaining);
 
     this.el.innerHTML = "<div>"+ minutesRemaining + ":" + secondsRemaining + "</div>";
+    if (minutesRemaining == 0 && secondsRemaining == 0)
+    {
+        this.player.play();
+    }
 }
 
 DB.regularContent = function() {
@@ -66,7 +76,7 @@ DB.widgetSwapper = function(){
     this.widgetUpdater;
 }
 
-DB.widgetSwapper.prototype.addWidget = function(widget, hours, minutes) {
+DB.widgetSwapper.prototype.addWidget = function(widget, hours, minutes, seconds = 0) {
     if (typeof widget.el !== 'object'){
         throw new Error("Widget must have an 'el' property of type object");
     }
@@ -76,7 +86,7 @@ DB.widgetSwapper.prototype.addWidget = function(widget, hours, minutes) {
     if (typeof widget.update !== 'function'){
         throw new Error("Widget must have an 'update' function");
     }
-    this.widgets.push({widget: widget, startTime: hours * 60 + minutes});
+    this.widgets.push({widget: widget, startTime: (hours * 60 * 60) + (minutes * 60) + seconds});
     this.widgets.sort(function(a, b) {
         return a.startTime - b.startTime;
     });
@@ -85,11 +95,12 @@ DB.widgetSwapper.prototype.addWidget = function(widget, hours, minutes) {
 DB.widgetSwapper.prototype.update = function() {
     var currentHour = new Date().getHours();
     var currentMinute = new Date().getMinutes();
-    var currentTimeInMinutes = (currentHour * 60) + currentMinute;
+    var currentSeconds = new Date().getSeconds();
+    var currentTimeInSeconds = (currentHour * 60 * 60) + (currentMinute * 60) + currentSeconds;
     var newWidget = this.widgets[this.widgets.length - 1].widget;
     for(var i=0; i < this.widgets.length; i++) {
         var widget = this.widgets[i];
-        if (widget.startTime <= currentTimeInMinutes) {
+        if (widget.startTime <= currentTimeInSeconds) {
             newWidget = widget.widget;
         }
     }
