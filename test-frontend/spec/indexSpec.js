@@ -37,10 +37,15 @@ describe("Index", function() {
     beforeEach(function() {
       var baseTime = new Date(2013, 9, 23, 9, 1, 0);
       jasmine.clock().install().mockDate(baseTime);
-      player = {
-        play: jasmine.createSpy('play')
+      standardAudio = {
+        play: jasmine.createSpy('play'),
+        currentTime: 0
       };
-      this.subject = new DB.standUpCountdown(player);
+      specialAudio = {
+        play: jasmine.createSpy('play'),
+        currentTime: 0
+      };
+      this.subject = new DB.standUpCountdown(standardAudio, specialAudio);
     });
 
     afterEach(function() {
@@ -67,12 +72,51 @@ describe("Index", function() {
       var baseTime = new Date(2013, 9, 23, 9, 5, 59);
       jasmine.clock().mockDate(baseTime);
       this.subject.update();
-      expect(this.subject.player.play).not.toHaveBeenCalled();
+      expect(this.subject.standardAudio.play).not.toHaveBeenCalled();
 
       jasmine.clock().tick(1000);
       this.subject.update();
-      expect(this.subject.player.play).toHaveBeenCalled();
+      expect(this.subject.standardAudio.play).toHaveBeenCalled();
     });
+
+    it("countdown clock plays THE FINAL COUNTDOWN when there are 15 seconds to go on a Friday", function() {
+      var baseTime = new Date(2017, 2, 3, 9, 5, 44);
+      jasmine.clock().mockDate(baseTime);
+      this.subject.update();
+      expect(this.subject.specialAudio.play).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(1000);
+      this.subject.update();
+      expect(this.subject.specialAudio.play).toHaveBeenCalled();
+    });
+
+    it("doesn't play THE FINAL COUNTDOWN on non Fridays", function() {
+      var baseTime = new Date(2017, 2, 2, 9, 5, 45);
+      jasmine.clock().mockDate(baseTime);
+      this.subject.update();
+      expect(this.subject.specialAudio.play).not.toHaveBeenCalled();
+    });
+
+    it("doesn't play the normal sound on Fridays", function() {
+      var baseTime = new Date(2017, 2, 3, 9, 6, 0);
+      jasmine.clock().mockDate(baseTime);
+      this.subject.update();
+      expect(this.subject.standardAudio.play).not.toHaveBeenCalled();
+    });
+
+    it("the countdown alert sound only plays once even if update is called twice when there is zero seconds left", function() {
+      var baseTime = new Date(2013, 9, 23, 9, 6, 0);
+      jasmine.clock().mockDate(baseTime);
+      this.subject.update();
+      expect(this.subject.standardAudio.play).toHaveBeenCalled();
+
+      this.subject.standardAudio.play.calls.reset();
+      jasmine.clock().tick(1);
+      this.subject.standardAudio.currentTime = 1;
+      this.subject.update();
+      expect(this.subject.standardAudio.play).not.toHaveBeenCalled();
+    });
+
   });
 
   describe("updatesSchedule", function() {

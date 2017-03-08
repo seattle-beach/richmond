@@ -5,8 +5,10 @@ var mainContent = {};
 
 function boot() {
     var widgetSwapper = new DB.widgetSwapper();
-    var player = new Audio('/audio/bell.mp3');
-    widgetSwapper.addWidget(new DB.standUpCountdown(player), 9, 1);
+    var standardAudio = new Audio('/audio/bell.mp3');
+    var specialAudio = new Audio('/audio/final_countdown.wav');
+
+    widgetSwapper.addWidget(new DB.standUpCountdown(standardAudio, specialAudio), 9, 1);
     widgetSwapper.addWidget(new DB.regularContent(), 9, 6, 1);
     widgetSwapper.update();
 
@@ -15,32 +17,40 @@ function boot() {
     document.querySelector("#root").appendChild(widgetSwapper.el);
 }
 
-DB.standUpCountdown = function(player) {
-    if (typeof player.play !== 'function'){
-        throw new Error("player must have a 'play' function");
-    }
-
+DB.standUpCountdown = function(standardAudio, specialAudio) {
     this.el = document.createElement("div");
     this.el.id = "countdown";
     this.updateInterval = 500;
-    this.player = player;
+    this.standardAudio = standardAudio;
+    this.specialAudio = specialAudio;
 };
 
 DB.standUpCountdown.prototype.update = function() {
-    var seconds = new Date().getSeconds();
-    var minutes = new Date().getMinutes();
-    var secondsRemaining = 60 - seconds;
-    var minutesRemaining = 5 - minutes;
+    var now = new Date();
+    var secondsRemaining = 60 - now.getSeconds();
+    var minutesRemaining = 5 - now.getMinutes();
     if (secondsRemaining == 60) {
-        minutesRemaining = 6 - minutes;
+        minutesRemaining = 6 - now.getMinutes();
         secondsRemaining = 0;
     }
     secondsRemaining = new DB.clock().formatTime(secondsRemaining);
 
     this.el.innerHTML = "<div>"+ minutesRemaining + ":" + secondsRemaining + "</div>";
-    if (minutesRemaining == 0 && secondsRemaining == 0)
-    {
-        this.player.play();
+
+    if (minutesRemaining != 0) {
+        return;
+    }
+    if (new DB.clock().isFriday()) {
+        var isPlaying = !this.specialAudio.paused && !this.specialAudio.ended && 0 < this.specialAudio.currentTime;
+        if (secondsRemaining <= 15 && !isPlaying) {
+            this.specialAudio.play();
+        }
+    }
+    else {
+        var isPlaying = !this.standardAudio.paused && !this.standardAudio.ended && 0 < this.standardAudio.currentTime;
+        if (secondsRemaining == 0 && !isPlaying) {
+            this.standardAudio.play();
+        }
     }
 }
 
@@ -228,4 +238,9 @@ DB.clock.prototype._getHours = function(today) {
 DB.clock.prototype.formatTime = function(i) {
     if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
     return i;
+};
+
+DB.clock.prototype.isFriday = function() {
+    var today = new Date();
+    return today.getDay() == 5;
 };
