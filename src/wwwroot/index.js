@@ -76,7 +76,10 @@ DB.widgetSwapper = function(){
     this.widgetUpdater;
 }
 
-DB.widgetSwapper.prototype.addWidget = function(widget, hours, minutes, seconds = 0) {
+DB.widgetSwapper.prototype.addWidget = function(widget, hours, minutes, seconds) {
+    if (typeof seconds === 'undefined') {
+        seconds = 0;
+    }
     if (typeof widget.el !== 'object'){
         throw new Error("Widget must have an 'el' property of type object");
     }

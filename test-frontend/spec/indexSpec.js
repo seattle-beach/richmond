@@ -64,8 +64,12 @@ describe("Index", function() {
     });
 
     it("countdown clock plays a sound when the coundown is up", function() {
-      var baseTime = new Date(2013, 9, 23, 9, 6, 0);
+      var baseTime = new Date(2013, 9, 23, 9, 5, 59);
       jasmine.clock().mockDate(baseTime);
+      this.subject.update();
+      expect(this.subject.player.play).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(1000);
       this.subject.update();
       expect(this.subject.player.play).toHaveBeenCalled();
     });
@@ -187,6 +191,20 @@ describe("Index", function() {
       expect(this.subject.el.firstChild.tagName).toEqual("SPAN");
 
       jasmine.clock().tick(25 * 60 * 1000);
+      this.subject.update();
+      expect(this.subject.el.firstChild.tagName).toEqual("P");
+    })
+
+    it("swaps based on the seconds when the minutes and hours are equal", function() {
+      this.subject.addWidget(widget1, 10, 30);
+      this.subject.addWidget(widget2, 10, 30, 1);
+
+      var baseTime = new Date(2013, 9, 23, 10, 30, 0);
+      jasmine.clock().mockDate(baseTime);
+      this.subject.update();
+      expect(this.subject.el.firstChild.tagName).toEqual("SPAN");
+
+      jasmine.clock().tick(1000);
       this.subject.update();
       expect(this.subject.el.firstChild.tagName).toEqual("P");
     })
