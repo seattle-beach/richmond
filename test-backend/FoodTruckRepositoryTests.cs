@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Xunit;
 using System;
+using Newtonsoft.Json;
 
 namespace Richmond.Tests
 {
@@ -14,72 +15,64 @@ namespace Richmond.Tests
         }
 
         [Fact]
-        public void ParsesFoodTruckData()
+        public void ParsesFoodTruckDataBeforeLunchtime()
         {
-            var dateProvider = new MockDateProvider(DateTime.Parse("2017-01-12 12:00"));
+            var dateProvider = new MockDateProvider(DateTime.Parse("2017-07-17 12:00"));
             var subject = new FoodTruckRepository(dateProvider);
 
-            var html = repositoryTestHelper.GetFileFixtureData("food_truck_fixture.html");
-            var result = subject.ParseFoodTruckSite(html);
+            var json = repositoryTestHelper.GetFileFixtureData("food_truck_fixture.json");
+            var result = subject.ParseFoodTruckSite(json);
 
             IList<FoodTruckResponse.FoodTruck> expectedResponse = new FoodTruckResponse.FoodTruck[4];
 
-            Assert.Equal("Thursday, 12 January 2017", result.Date);
-            Assert.Equal("Thursday", result.DayOfWeek);
+            Assert.Equal("Monday, 17 July 2017", result.Date);
+            Assert.Equal("Monday", result.DayOfWeek);
 
-            expectedResponse[0] = new FoodTruckResponse.FoodTruck { Name = "Beez Kneez Gourmet Sausages", Type = "Hot Dogs" };
-            expectedResponse[1] = new FoodTruckResponse.FoodTruck { Name = "Seattle Chicken Over Rice", Type = "Mediterranean" };
-            expectedResponse[2] = new FoodTruckResponse.FoodTruck { Name = "Bomba Fusion", Type = "Asian" };
-            expectedResponse[3] = new FoodTruckResponse.FoodTruck { Name = "Neema's Comfort Food", Type = "Southern" };
+            expectedResponse[0] = new FoodTruckResponse.FoodTruck { Name = "Chick'n Fix", Type = "None" };
+            expectedResponse[1] = new FoodTruckResponse.FoodTruck { Name = "Where Ya At Matt", Type = "Southern" };
 
-
-            for (var i = 0; i < 4; i++)
+            for (var i = 0; i < 2; i++)
             {
                 Assert.Equal(expectedResponse[i], result.FoodTrucks[i]);
             }
         }
 
         [Fact]
-        public void ParsesTomorrowsFoodTruckData()
+        public void ParsesTomorrowsFoodTruckDataAfter2pmLocalTime()
         {
-            var dateProvider = new MockDateProvider(DateTime.Parse("2017-01-12 14:01"));
+            var dateProvider = new MockDateProvider(DateTime.Parse("2017-07-17 14:01"));
             var subject = new FoodTruckRepository(dateProvider);
 
-            var html = repositoryTestHelper.GetFileFixtureData("food_truck_fixture.html");
-            var result = subject.ParseFoodTruckSite(html);
+            var json = repositoryTestHelper.GetFileFixtureData("food_truck_fixture.json");
+            var result = subject.ParseFoodTruckSite(json);
 
             IList<FoodTruckResponse.FoodTruck> expectedResponse = new FoodTruckResponse.FoodTruck[4];
 
-            expectedResponse[0] = new FoodTruckResponse.FoodTruck { Name = "Hallava Falafel", Type = "Mediterrannean" };
-            expectedResponse[1] = new FoodTruckResponse.FoodTruck { Name = "El Cabrito Oaxaca", Type = "Mexican" };
-            expectedResponse[2] = new FoodTruckResponse.FoodTruck { Name = "Wet Buns", Type = "Sandwiches" };
-            expectedResponse[3] = new FoodTruckResponse.FoodTruck { Name = "Bomba Fusion", Type = "Asian" };
+            expectedResponse[0] = new FoodTruckResponse.FoodTruck { Name = "Sam Choy's Poke To The Max", Type = "Hawaiian" };
+            expectedResponse[1] = new FoodTruckResponse.FoodTruck { Name = "Snout and Co", Type = "BBQ" };
 
-
-            for (var i = 0; i < 4; i++)
+            for (var i = 0; i < 2; i++)
             {
                 Assert.Equal(expectedResponse[i], result.FoodTrucks[i]);
             }
         }
 
         [Fact]
-        public void ParsesFoodTruckDataOverWeekends()
+        public void ReturnsFoodTruckDataSkippingTheWeekend()
         {
-            var dateProvider = new MockDateProvider(DateTime.Parse("2017-01-14"));
+            // Shows the next days' Food trucks after 2PM Mon-Thursday except Friday when it shows it all day long. If its a weekend shows Monday data.
+            var dateProvider = new MockDateProvider(DateTime.Parse("2017-07-22"));
             var subject = new FoodTruckRepository(dateProvider);
 
-            var html = repositoryTestHelper.GetFileFixtureData("food_truck_fixture.html");
-            var result = subject.ParseFoodTruckSite(html);
+            var json = repositoryTestHelper.GetFileFixtureData("food_truck_fixture.json");
+            var result = subject.ParseFoodTruckSite(json);
 
             IList<FoodTruckResponse.FoodTruck> expectedResponse = new FoodTruckResponse.FoodTruck[4];
 
-            expectedResponse[0] = new FoodTruckResponse.FoodTruck { Name = "Bread &amp; Circuses", Type = "Burgers / Gastropub" };
-            expectedResponse[1] = new FoodTruckResponse.FoodTruck { Name = "Chickn Fix", Type = "Southern / Asian" };
-            expectedResponse[2] = new FoodTruckResponse.FoodTruck { Name = "Hallava Falafel", Type = "Mediterrannean" };
-            expectedResponse[3] = new FoodTruckResponse.FoodTruck { Name = "Where Ya At Matt?", Type = "Southern / Creole" };
+            expectedResponse[0] = new FoodTruckResponse.FoodTruck { Name = "Chick'n Fix", Type = "None" };
+            expectedResponse[1] = new FoodTruckResponse.FoodTruck { Name = "Where Ya At Matt", Type = "Southern" };
 
-
-            for (var i = 0; i < 4; i++)
+            for (var i = 0; i < 2; i++)
             {
                 Assert.Equal(expectedResponse[i], result.FoodTrucks[i]);
             }

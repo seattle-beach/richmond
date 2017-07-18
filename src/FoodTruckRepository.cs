@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using AngleSharp.Dom;
 using AngleSharp.Parser.Html;
+using Newtonsoft.Json;
 using System.Linq;
 using System.Net.Http;
 using System;
 
 namespace Richmond
 {
+
     public interface IFoodTruckRepository
     {
         string RequestFoodTruckWebsite();
@@ -19,6 +21,7 @@ namespace Richmond
         private readonly IDateProvider _dateProvider;
         private readonly string _foodTruckURI;
 
+
         public FoodTruckRepository(IDateProvider dateProvider, HttpMessageHandler httpMessageHandler, string foodTruckURI)
         {
             _dateProvider = dateProvider ?? new DateProvider();
@@ -29,14 +32,14 @@ namespace Richmond
         public FoodTruckRepository(IDateProvider dateProvider) : this(dateProvider, null, null)
         {}
 
-        public FoodTruckResponse ParseFoodTruckSite(string html)
+        public FoodTruckResponse ParseFoodTruckSite(string json)
         {
 
-            var parser = new HtmlParser();
-            var document = parser.Parse(html);
-
-            var schedule = document.QuerySelector("body > div.l-canvas.sidebar_right.type_wide.titlebar_default > div.l-main > div > div > section.l-section.wpb_row.height_small > div > div > div > div.wpb_text_column > div > div > div > dl");
-            var response  = GetResponseForDay(schedule, GetTargetDayOfWeek());
+            dynamic dynObj = JsonConvert.DeserializeObject(json);
+            var schedule = dynObj.events;
+            var date = GetTargetDate();
+            var response  = GetResponseForDay(schedule, date);
+            
             return response;
         }
 
@@ -54,12 +57,17 @@ namespace Richmond
             var result = task.Result;
             return result.Content.ReadAsStringAsync().Result;
         }
-
-        private DayOfWeek GetTargetDayOfWeek()
+        private string ParseFoodTruckJson(string json)
         {
-            DayOfWeek currentDay = _dateProvider.Now().DayOfWeek;
-            TimeSpan currentTime = _dateProvider.Now().TimeOfDay;
-            DayOfWeek targetDay = currentDay;
+            dynamic dynObj = JsonConvert.DeserializeObject(json);
+            var truck = dynObj.events[0].bookings[0].truck.ToString();
+            return truck;
+        }
+        private DateTime GetTargetDate()
+        {
+            DateTime targetDate = _dateProvider.Now();
+            DayOfWeek currentDay = targetDate.DayOfWeek;
+            TimeSpan currentTime = targetDate.TimeOfDay;;
             TimeSpan twoPm = new TimeSpan(14,0,0);
             switch (currentDay)
             {
@@ -69,41 +77,52 @@ namespace Richmond
                 case DayOfWeek.Thursday:
                     if (currentTime > twoPm)
                     {
-                        targetDay = currentDay + 1;
+                        targetDate = targetDate.AddDays(1);
                     }
                     break;
                 case DayOfWeek.Saturday:
+                    targetDate = targetDate.AddDays(2);
+                    break;
                 case DayOfWeek.Sunday:
-                    targetDay = DayOfWeek.Monday;
+                    targetDate = targetDate.AddDays(1);
                     break;
             }
-            return targetDay;
+            return targetDate.Date;
         }
 
-        private FoodTruckResponse GetResponseForDay(IElement schedule, DayOfWeek targetDay)
+        private FoodTruckResponse GetResponseForDay(Newtonsoft.Json.Linq.JArray events, DateTime targetDate)
         {
             var dateIndex = 0;
 
-            while (dateIndex < schedule.Children.Length)
+            while (dateIndex < events.Count)
             {
-                var date = schedule.Children[dateIndex].Children[0];
-                var dayOfWeek = date.Children[0].InnerHtml;
-                var trimmedDayOfWeek = dayOfWeek.Substring(0, dayOfWeek.Length - 1);
-                var targetDayString = Enum.GetName(typeof(DayOfWeek), targetDay);
-                if (trimmedDayOfWeek.Equals(targetDayString))
+                var date = DateTime.Parse(events[dateIndex].SelectToken("start_time").ToString());
+
+                if (date.Date.Equals(targetDate))
                 {
-                    var dayOfMonth = date.Children[1].InnerHtml;
-                    var month = date.Children[2].InnerHtml;
-                    var year = date.Children[3].InnerHtml;
+                    var dayOfMonth = date.Day.ToString();
+                    var month = date.ToString("MMMM");
+                    var year = date.Year.ToString();
 
-                    var foodTruckList = schedule.Children[dateIndex + 1].Children[0];
+                    var bookings = events[dateIndex].SelectToken("bookings");
+                    IList<FoodTruckResponse.FoodTruck> foodTrucks = new List<FoodTruckResponse.FoodTruck>();
+                    foreach (Newtonsoft.Json.Linq.JToken booking in bookings) {
+                        var truck = booking.SelectToken("truck");
+                        var type = "None";
+                        if (truck.SelectToken("food_categories").Count() > 0) {
+                            type = truck.SelectToken("food_categories")[0].ToString();
+                        }
+                        FoodTruckResponse.FoodTruck foodTruck = new FoodTruckResponse.FoodTruck{ Name = truck.SelectToken("name").ToString(), Type = type };
+                        foodTrucks.Add(foodTruck);
+                    }
 
-                    IList<FoodTruckResponse.FoodTruck> foodTrucks = foodTruckList.Children.Select(ToFoodTruck).ToList();
-                    var dateString = String.Join(" ", new string[] { dayOfWeek, dayOfMonth, month, year });
+                    var dayOfWeek = date.DayOfWeek.ToString();
+                    var targetDayString = Enum.GetName(typeof(DayOfWeek), targetDate.DayOfWeek);
+                    var dateString = String.Join(" ", new string[] { dayOfWeek + ",", dayOfMonth, month, year });
 
                     return new FoodTruckResponse { FoodTrucks = foodTrucks, Date = dateString, DayOfWeek = targetDayString };
                 }
-                dateIndex = dateIndex + 2;
+                dateIndex = dateIndex + 1;
             }
             return null;
         }

@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="food_truck_fixture.html">
+    <None Update="food_truck_fixture.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -28,6 +28,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.0.3" />
     <PackageReference Include="Microsoft.DotNet.InternalAbstractions" Version="1.0.0" />
     <PackageReference Include="LightMock.vNext" Version="1.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3"/>
   </ItemGroup>
 
 </Project>
