@@ -49,7 +49,7 @@ richmond> ./scripts/install.sh
 ```
 
 # Deployment
-The app is deployed in the `seattle-beach` PWS org, space name `richmond`. We have a deployment service account `alidaka+richmond+cf@pivotal.io`; ask another beach person for the password.
+The app is deployed in the `seattle-beach` PWS org, space name `richmond`. We have a deployment service account `sealabs-beach@googlegroups.com`; ask another beach person for the password.
 
 To `cf push` or update the CI pipeline, environment variables `CF_PASSWORD` and `CF_USERNAME` must be set. We're using `direnv` to manage these, but anything is fine.
 
