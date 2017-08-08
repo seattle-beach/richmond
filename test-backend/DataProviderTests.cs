@@ -15,11 +15,12 @@ namespace Richmond.Tests
 
             var pacificNow = dateProvider.Now();
 
-            int actualDifference = (utcNow.Day > pacificNow.Day ? 24 : 0) + utcNow.Hour - pacificNow.Hour;
-            int expectedDifference = pacificNow.IsDaylightSavingTime() ? 7 : 8;
-            
             var pacificTimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/Vancouver");
-            Assert.Equal(TimeZoneInfo.Local, pacificTimeZone);
+
+            int actualDifference = (utcNow.Day > pacificNow.Day ? 24 : 0) + utcNow.Hour - pacificNow.Hour;
+            // DateTime.IsDaylightSavingsTime() is broken and checks against system local timezone not the timezone in the DateTime itself
+            int expectedDifference = pacificTimeZone.IsDaylightSavingTime(pacificNow) ? 7 : 8;
+            
             Assert.Equal(expectedDifference, actualDifference);
         }
     }
