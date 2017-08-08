@@ -59,13 +59,13 @@ In order to view the CI pipeline simply visit [http://10.37.2.27:8080](http://10
 
 Updating CI:
 
-1. Connect to the machine: `vnc://10.37.2.27` or `ci1.local`
+1. Connect to the machine: `ssh sea-ci1.local`
 2. See the [vagrant installation instructions](https://concourse.ci/vagrant.html)
 3. On the Concourse host, uncomment (or add a line to) the Vagrantfile like:
 ```ruby
 config.vm.network "forwarded_port", guest: 8080, host: 8080
 ```
-4. Visit [http://10.37.2.27:8080](http://10.37.2.27:8080) and login, then download `fly`
+4. Visit [http://sea-ci1.local:8080](http://sea-ci1.local:8080) and login, then download `fly`
 5. `richmond/concourse> ./update-concourse.sh`
 
 Optionally, start vagrant on Mac reboot (note: may depend on VB/vagrant version? Currently does not work...):
@@ -74,7 +74,7 @@ richmond/concourse> ln -s vagrant.startup.plist ~/Library/LaunchAgents/vagrant.s
 richmond/concourse> launchctl load -w ~/Library/LaunchAgents/vagrant.startup.plist
 ```
 
-In order to update the concourse pipelines, you'll need to set the `TRACKER_API_TOKEN` environment variable. You can get it from the Profile page on the seattle-beach@pivotal.io user on [pivotaltracker.com](https://www.pivotaltracker.com)
+In order to update the concourse pipelines, you'll need to set the `TRACKER_API_TOKEN` environment variable. You can get it from the Profile page on the sealabs-beach@googlegroups.com user on [pivotaltracker.com](https://www.pivotaltracker.com)
 
 # dotnet core resources
 - [project.json](https://docs.microsoft.com/en-us/dotnet/articles/core/tools/project-json) (similar to package.json, Gemfile, Cargo.toml, build.gradle, *.csproj, ...)
