@@ -15,7 +15,7 @@ For development, I would recommend [Visual Studio Code](https://code.visualstudi
 Our workstation image includes [direnv](https://direnv.net/), so you should just be able to add these to a file named `.envrc` in the root of the project.
 
 ```bash
-FOODTRUCK_PATH=http://www.seattlefoodtruck.com/schedule/occidental-park-food-truck-pod/
+FOODTRUCK_PATH=https://www.seattlefoodtruck.com/api/events?page=1&for_locations=39&with_active_trucks=true&include_bookings=true&with_booking_status=approved
 ```
 
 ### Populate local dependency cache
