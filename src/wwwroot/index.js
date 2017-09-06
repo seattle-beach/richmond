@@ -118,6 +118,12 @@ DB.widgetSwapper.prototype.update = function() {
         }
     }
 
+    if (this.previousWidget == newWidget)
+    {
+        return;
+    }
+    this.previousWidget = newWidget;
+
     if (this.el.firstChild)
     {
         this._stopUpdating();
