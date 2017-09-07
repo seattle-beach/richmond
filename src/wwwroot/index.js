@@ -57,11 +57,15 @@ DB.standUpCountdown.prototype.update = function() {
 DB.regularContent = function() {
     this.el = document.createElement("div");
 
-    var inner = "<div class='flex-container'><div id='dynamic-content'></div></div>";
+    var inner = "<div class='flex-container'><div id='dynamic-content'></div><div id='static-content'></div></div>";
 
     this.el.innerHTML = inner;
     this._clock = new DB.clock();
-    this.el.querySelector(".flex-container").appendChild(this._clock.el);
+    this.el.querySelector("#static-content").appendChild(this._clock.el);
+
+    this._coffee = new DB.coffeeWidget();
+    this.el.querySelector("#static-content").appendChild(this._coffee.el);
+    //widgetSwapper.addWidget(new DB.coffeeWidget(), 0, 0);
 
     this._widgetSwapper = new DB.widgetSwapper();
     this._widgetSwapper.addWidget(new DB.foodTruckWidget(), 0, 0);
@@ -73,11 +77,28 @@ DB.regularContent = function() {
 
 DB.regularContent.prototype.update = function(){
     this._clock.updateTime();
+    this._coffee.update();
     this._widgetSwapper.update();
 };
 
 function cssClassesForFoodtruckType(type) {
     return "foodtruck " + type.toLowerCase().replace(new RegExp(' ', 'g'), '-').replace(new RegExp('-?/-?', 'g'), ' ');
+};
+
+function cssClassesForCoffeeLevel(status, level) {
+    var cssClass = "coffee-" + status.toLowerCase();
+    if (status.toLowerCase() == "available")
+    {
+        if (level <= 33) {
+            cssClass = "coffee-low";
+        } else if (level <= 66) {
+            cssClass = "coffee-medium";
+        } else {
+            cssClass = "coffee-high";
+        }
+    }
+
+    return cssClass;
 };
 
 DB.widgetSwapper = function(){
@@ -142,6 +163,45 @@ DB.widgetSwapper.prototype._startUpdating = function(widget) {
 DB.widgetSwapper.prototype._stopUpdating = function() {
     clearInterval(this.widgetUpdater);
 }
+
+DB.coffeeWidget = function() {
+    this.el = document.createElement("div");
+    this.el.id = "coffee";
+    this.updateInterval = 30 * 1000;
+};
+
+DB.coffeeWidget.prototype.update = function() {
+    $.ajax({type: "GET",
+        url: "/coffee",
+        async: true,
+        crossDomain: true,
+
+        success: function(ret)
+        {
+            try {
+                var inner = "<h1 class='coffee-title'>Coffee Pots</h1>";
+                inner += "<ul>";
+                ret.coffees.forEach(function(coffee) {
+                    inner += "<li>";
+                    inner += "<span class='" + cssClassesForCoffeeLevel(coffee.status, coffee.level) + "'><i class='fa fa-coffee' aria-hidden='true'></i>";
+                    
+                    inner += " <strong>"+ coffee.devId + "</strong>";
+                    if (coffee.level) {
+                        inner += " (" + coffee.level + "%)";
+                    }
+                    inner += "</span></li>";
+                });
+                inner += "</ul>";
+                this.el.innerHTML = inner;
+            } catch (e) {
+                console.log("ERRRR: " + e);
+            }
+        }.bind(this),
+        error: function(e) {
+        console.log('ERROR: ' + e);
+        }
+    });
+};
 
 DB.busScheduleWidget = function() {
     this.el = document.createElement("div");

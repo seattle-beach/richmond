@@ -45,8 +45,18 @@ li {
 
 #clock {
   font-size: 220px;
-  text-align: left;
+  text-align: center;
   width: 650px;
+}
+
+#coffee {
+    text-align: left;
+
+    margin-right: 60px;
+    background-color: #fff;
+    color: #666666;
+    padding: 20px 50px;
+    font: lighter 36px Helvetica, Verdana, sans-serif;
 }
 
 #countdown {
@@ -70,6 +80,10 @@ li {
 .flex-container {
   display: flex;
   justify-content: space-between;
+}
+
+#static-content {
+  display: inline-block;
 }
 
 .foodtruck-content {
@@ -192,6 +206,25 @@ li {
 .early {
     color: seagreen;
 
+}
+
+.coffee-unavailable {
+    color: #e0e4e5;
+}
+.coffee-brewing {
+    color: #229be6;
+}
+.coffee-available {
+    color: #8ae622;
+}
+.coffee-high {
+    color: #8ae622;
+}
+.coffee-medium {
+    color: #e6b822;
+}
+.coffee-low {
+    color: #f2242f;
 }
 
 .bus-arrival {
