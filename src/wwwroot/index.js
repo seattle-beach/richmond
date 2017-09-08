@@ -6,7 +6,8 @@ var mainContent = {};
 function boot() {
     var widgetSwapper = new DB.widgetSwapper();
     var standardAudio = new Audio('/audio/bell.mp3');
-    var specialAudio = new Audio('/audio/final_countdown.wav');
+    // var specialAudio = new Audio('/audio/final_countdown.wav');
+    var specialAudio = new Audio('/audio/final_time_warp.mp3');
 
     widgetSwapper.addWidget(new DB.standUpCountdown(standardAudio, specialAudio), 9, 1);
     widgetSwapper.addWidget(new DB.regularContent(), 9, 6, 1);
