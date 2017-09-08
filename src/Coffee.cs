@@ -6,5 +6,6 @@ namespace Richmond
         public string DevId;
         public Nullable<int> Level;
         public string Status;
+        public float Cups;
     }
 }

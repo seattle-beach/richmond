@@ -183,11 +183,13 @@ DB.coffeeWidget.prototype.update = function() {
                 inner += "<ul>";
                 ret.coffees.forEach(function(coffee) {
                     inner += "<li>";
-                    inner += "<span class='" + cssClassesForCoffeeLevel(coffee.status, coffee.level) + "'><i class='fa fa-coffee' aria-hidden='true'></i>";
-                    
+                    inner += "<span class='" + cssClassesForCoffeeLevel(coffee.status, coffee.level) + "'>";
                     inner += " <strong>"+ coffee.devId + "</strong>";
                     if (coffee.level) {
-                        inner += " (" + coffee.level + "%)";
+                        inner += "(" + coffee.level + "%)<br />";
+                    }
+                    for (var i = 0; i < Math.round(coffee.cups); i++) {
+                        inner += "<i class='fa fa-coffee' aria-hidden='true'></i>";
                     }
                     inner += "</span></li>";
                 });
