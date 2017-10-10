@@ -22,7 +22,7 @@ namespace Richmond.BusClient
 
         public WeatherBusResult Fetch()
         {
-            var task = httpClientWrapper.GetAsync("http://weatherbus-bus-dev.cfapps.io/api/v1/departures?stopId=1_1535");
+            var task = httpClientWrapper.GetAsync("http://weatherbus-bus-dev.cfapps.io/api/v1/departures?stopId=1_623");
             HttpResponseMessage responseMessage = task.Result;
             string payload = responseMessage.Content.ReadAsStringAsync().Result;
             var busResult = JsonConvert.DeserializeObject<WeatherBusResult>(payload);
