@@ -53,6 +53,10 @@ The app is deployed in the `seattle-beach` PWS org, space name `richmond`. We ha
 
 To `cf push` or update the CI pipeline, environment variables `CF_PASSWORD` and `CF_USERNAME` must be set. We're using `direnv` to manage these, but anything is fine.
 
+`cf push` needs to be run from the root directory, but it points at the src directory.
+
+>```cf push -p src```
+
 ### CI
 We're currently using the monitor between Lovelace and Hopper as our Concourse CI server.
 In order to view the CI pipeline simply visit [http://10.37.2.27:8080](http://10.37.2.27:8080) click the login button in the upper right corner and select the 'main' pipeline.
