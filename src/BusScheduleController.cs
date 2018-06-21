@@ -40,7 +40,7 @@ namespace Richmond
                 var now = this.dateProvider.EpochNow();
                 var buses = busResponse.Data
                     .Select(b => this.busFactory.FromWeatherBus(b, now))
-                    .Where(b => string.Equals("LINK", b.ShortName))
+                    .Where(b => string.Equals("Link light rail", b.ShortName))
                     .Take(2);
 
                 var schedule = new BusScheduleResponse

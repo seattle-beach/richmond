@@ -218,7 +218,7 @@ DB.busScheduleWidget.prototype.update = function() {
 
         success: function(ret){
             try {
-                var inner = "<div><h1 class='bus-stop-title'>S Jackson St & Occidental Ave</h1>";
+                var inner = "<div><h1 class='bus-stop-title'>International District Station</h1>";
                 inner += "<h2 class='bus-description-title'>" + ret.buses[0].shortName + " - " + ret.buses[0].longName +"</h2>"
                 inner += "<ul class='bus-list'>";
                 ret.buses.forEach(function(bus) {
